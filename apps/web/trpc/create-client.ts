@@ -17,3 +17,9 @@ export const createTRPCHttpBatchClientClient = (opts?: CreateTRPCHttpBatchClient
     },
   });
 };
+
+//  createTRPCHttpBatchClientClient()  => api object create karto
+// httpLink => backend la request pathavto
+// httpBatchStreamLink => backend la request pathavto + streaming support
+
+// = backend shi connection setup
