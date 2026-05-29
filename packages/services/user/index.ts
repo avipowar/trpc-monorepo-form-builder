@@ -1,6 +1,6 @@
 import {
   createUserWitEmailAndPasswordInput,
-  type CreateUserWitjEmailAndPasswordInputType,
+  type CreateUserWitEmailAndPasswordInputType,
 } from "./model";
 import { createHmac, randomBytes } from "node:crypto";
 
@@ -8,14 +8,14 @@ import { db, eq } from "@repo/database";
 import { usersTable } from "@repo/database/models/user";
 import { th } from "zod/v4/locales";
 
-class userService {
+class UserService {
   private async getUserByEmail(email: string) {
     const result = await db.select().from(usersTable).where(eq(usersTable.email, email));
     if (!result || result.length === 0) return null;
     return result[0];
   }
 
-  public async createUserWitjEmailAndPassword(payload: CreateUserWitjEmailAndPasswordInputType) {
+  public async createUserWitEmailAndPassword(payload: CreateUserWitEmailAndPasswordInputType) {
     const { fullName, email, password } =
       await createUserWitEmailAndPasswordInput.parseAsync(payload);
 
@@ -36,11 +36,13 @@ class userService {
       })
       .returning({ id: usersTable.id });
 
-    if (!userInsertResult || userInsertResult.length === 0)
+    if (!userInsertResult || userInsertResult.length === 0 || !userInsertResult[0]?.id)
       throw new Error("something went wrong while creating the user");
 
-    return userInsertResult[0]?.id;
+    return {
+      id: userInsertResult[0].id,
+    };
   }
 }
 
-export default userService;
+export default UserService;

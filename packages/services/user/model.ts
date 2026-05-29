@@ -6,6 +6,6 @@ export const createUserWitEmailAndPasswordInput = z.object({
   password: z.string().describe("password of the user"),
 });
 
-export type CreateUserWitjEmailAndPasswordInputType = z.infer<
+export type CreateUserWitEmailAndPasswordInputType = z.infer<
   typeof createUserWitEmailAndPasswordInput
 >;
