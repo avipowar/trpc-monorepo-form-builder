@@ -19,7 +19,7 @@ const openApiDocument = generateOpenApiDocument(serverRouter, {
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://localhost:3000",
   }),
 );
 
