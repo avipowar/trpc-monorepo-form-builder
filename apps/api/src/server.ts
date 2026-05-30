@@ -10,6 +10,8 @@ import { serverRouter, createContext } from "@repo/trpc/server";
 
 import { env } from "./env";
 
+console.log("cleinet url:", env.CLIENT_URL);
+
 export const app = express();
 const openApiDocument = generateOpenApiDocument(serverRouter, {
   title: "Streamyst OpenAPI",
@@ -19,7 +21,7 @@ const openApiDocument = generateOpenApiDocument(serverRouter, {
 
 app.use(
   cors({
-    origin: "https://localhost:3000",
+    origin: "http://localhost:3101",
   }),
 );
 
