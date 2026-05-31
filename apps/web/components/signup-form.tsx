@@ -11,10 +11,10 @@ import {
 } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
 import { trpc } from "~/trpc/client";
+import { useSignup } from "~/hooks/api/auth";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {
-  const { mutateAsync: createUserWithEmailAndPasswordAsync } =
-    trpc.auth.createUserWithEmailAndPassword.useMutation();
+  const { createUserWithEmailAndPasswordAsync } = useSignup();
 
   type SignupFormData = {
     fullName: string;
