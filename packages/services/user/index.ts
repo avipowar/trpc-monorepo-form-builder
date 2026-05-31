@@ -58,6 +58,7 @@ class UserService {
 
     return {
       id: userId,
+      token,
     };
   }
 }

@@ -10,7 +10,7 @@ import { serverRouter, createContext } from "@repo/trpc/server";
 
 import { env } from "./env";
 
-console.log("cleinet url:", env.CLIENT_URL);
+import cookieParser from "cookie-parser";
 
 export const app = express();
 const openApiDocument = generateOpenApiDocument(serverRouter, {
@@ -22,8 +22,11 @@ const openApiDocument = generateOpenApiDocument(serverRouter, {
 app.use(
   cors({
     origin: "http://localhost:3101",
+    credentials: true,
   }),
 );
+
+app.use(cookieParser());
 
 app.use(express.json());
 
