@@ -15,6 +15,13 @@
       "when": 1780040926650,
       "tag": "0001_worried_rafael_vega",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780382614635,
+      "tag": "0002_smart_salo",
+      "breakpoints": true
     }
   ]
 }
