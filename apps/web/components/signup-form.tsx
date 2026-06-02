@@ -12,9 +12,11 @@ import {
 import { Input } from "~/components/ui/input";
 import { trpc } from "~/trpc/client";
 import { useSignup } from "~/hooks/api/auth";
+import { useRouter } from "next/navigation";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {
   const { createUserWithEmailAndPasswordAsync } = useSignup();
+  const router = useRouter();
 
   type SignupFormData = {
     fullName: string;
@@ -34,6 +36,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
     });
 
     console.log(`User Created with ID=${id}`);
+    router.replace("/dashboard");
   };
 
   return (

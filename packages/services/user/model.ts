@@ -1,4 +1,4 @@
-import { email, z } from "zod";
+import { z } from "zod";
 
 export const createUserWitEmailAndPasswordInput = z.object({
   fullName: z.string().describe("Full name of the user"),
@@ -24,3 +24,4 @@ export const signInUserWithEmailAndPasswordInput = z.object({
 export type SignInUserWithEmailAndPasswordInputType = z.infer<
   typeof signInUserWithEmailAndPasswordInput
 >;
+  
