@@ -32,7 +32,7 @@ export const useCreateForm = () => {
 
 export const useListForms = () => {
   const {
-    data: forms,
+    data: forms = [],
     error,
     isFetched,
     isFetching,
