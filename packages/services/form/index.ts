@@ -10,7 +10,7 @@ class FormService {
       id: formsTable.id,
     });
 
-    if (!result || result.length === 0)
+    if (!result || result.length === 0 || !result[0]?.id)
       throw new Error(`something went wrong while creating the form`);
 
     return { id: result[0]?.id };
