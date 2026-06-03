@@ -119,15 +119,9 @@ class UserService {
     return user[0]!;
   }
 
-  public async verifyAndDecodeUserToken(token: string): Promise<{
-    id: string;
-    email: string;
-    fullName: string;
-    profileImageUrl: string | null;
-  }> {
+  public async verifyAndDecodeUserToken(token: string) {
     const { id } = await this.verifyUserToken(token);
-    const userInfo = await this.getUserInfoById(id);
-    return { ...userInfo };
+    return { id };
   }
 }
 

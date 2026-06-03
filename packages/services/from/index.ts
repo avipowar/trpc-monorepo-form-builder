@@ -1,0 +1,20 @@
+import db from "@repo/database";
+import { createFormInput, CreateFormInputType } from "./model";
+import { formsTable } from "@repo/database/models/form";
+
+class FormService {
+  public async createForm(payload: CreateFormInputType) {
+    const { createdBy, title, description } = await createFormInput.parseAsync(payload);
+
+    const result = await db.insert(formsTable).values({ title, description, createdBy }).returning({
+      id: formsTable.id,
+    });
+
+    if (!result || result.length === 0)
+      throw new Error(`something went wrong while creating the form`);
+
+    return { id: result[0]?.id };
+  }
+}
+
+export default FormService;
