@@ -83,6 +83,20 @@ class FormFieldService {
 
   public async getField(payload: GetFieldsInputType) {
     const { formId } = await getFieldsInput.parseAsync(payload);
+    return db
+      .select({
+        id: formFieldsTable.id,
+        label: formFieldsTable.label,
+        labelKey: formFieldsTable.labelKey,
+        type: formFieldsTable.type,
+        description: formFieldsTable.description,
+        placeholder: formFieldsTable.placeholder,
+        isRequired: formFieldsTable.isRequired,
+        index: formFieldsTable.index,
+      })
+      .from(formFieldsTable)
+      .where(eq(formFieldsTable.formId, formId))
+      .orderBy(asc(formFieldsTable.index));
   }
 
   public async deleteField(payload: DeleteFieldInputType) {
