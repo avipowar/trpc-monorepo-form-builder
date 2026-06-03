@@ -77,7 +77,7 @@ export const authRouter = router({
     .input(getLoggedInUserInfoInputModel)
     .output(getLoggedInUserInfoOutputModel)
     .query(async ({ ctx }) => {
-      const { id, email, fullName, profileImageUrl } = await userService.getUserInfoById(
+    const { id, email, fullName, profileImageUrl } = await userService.getUserInfoById(
         ctx?.user.id,
       );
 
