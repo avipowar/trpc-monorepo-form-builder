@@ -36,6 +36,11 @@ import {
 const data = {
   navMain: [
     {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: IconDashboard,
+    },
+    {
       title: "Forms",
       url: "/dashboard/forms",
       icon: IconFileDescription,
