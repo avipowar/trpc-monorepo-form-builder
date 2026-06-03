@@ -81,7 +81,7 @@ class FormFieldService {
     return { id: result[0]!.id };
   }
 
-  public async getField(payload: GetFieldsInputType) {
+  public async getFields(payload: GetFieldsInputType) {
     const { formId } = await getFieldsInput.parseAsync(payload);
     return db
       .select({
