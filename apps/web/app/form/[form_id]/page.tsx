@@ -7,7 +7,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { Field, FieldGroup, FieldLabel, FieldDescription, FieldError } from "~/components/ui/field";
-import { useGetForm } from "~/hooks/api/form";
+import { useGetForm, useSubmitForm } from "~/hooks/api/form";
 
 type FieldType = "TEXT" | "NUMBER" | "EMAIL" | "YES_NO" | "PASSWORD";
 
@@ -95,7 +95,7 @@ function FormFieldInput({
 export default function PublicFormPage({ params }: { params: Promise<{ form_id: string }> }) {
   const { form_id: formId } = use(params);
   const { form, isLoading } = useGetForm(formId);
-  // const { submitFormAsync } = useSubmitForm();
+  const { submitFormAsync, status, error, isSuccess, isError } = useSubmitForm();
   const [submitted, setSubmitted] = useState(false);
 
   const {
@@ -106,25 +106,47 @@ export default function PublicFormPage({ params }: { params: Promise<{ form_id: 
     formState: { errors, isSubmitting },
   } = useForm();
 
-  // const onSubmit = async (data: Record<string, unknown>) => {
-  //   if (!form) return;
-  //   const values = form.fields
-  //     .filter((field) => data[field.labelKey] !== undefined && data[field.labelKey] !== "")
-  //     .map((field) => ({
-  //       formFieldId: field.id,
-  //       value: String(data[field.labelKey]),
-  //     }));
-  //   // await submitFormAsync({ formId, values });
-  //   // setSubmitted(true);
-  // };
+  const onSubmit = async (data: Record<string, unknown>) => {
+    try {
+      if (!form) {
+        console.log("FORM NOT FOUND");
+        return;
+      }
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <p className="text-sm text-muted-foreground">Loading form...</p>
-  //     </div>
-  //   );
-  // }
+      const values = form.fields
+        .filter((field) => data[field.labelKey] !== undefined && data[field.labelKey] !== "")
+        .map((field) => ({
+          formFieldId: field.id,
+          value: String(data[field.labelKey]),
+        }));
+
+      console.log("VALUES TO SAVE:");
+      console.table(values);
+
+      const response = await submitFormAsync({
+        formId,
+        values,
+      });
+
+      console.log("TRPC RESPONSE:");
+      console.log(response);
+
+      console.log("FORM SUBMITTED SUCCESSFULLY");
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error("SUBMIT ERROR:");
+      console.error(err);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-sm text-muted-foreground">Loading form...</p>
+      </div>
+    );
+  }
 
   if (!form) {
     return (
@@ -139,16 +161,16 @@ export default function PublicFormPage({ params }: { params: Promise<{ form_id: 
     );
   }
 
-  // if (submitted) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <div className="text-center space-y-2">
-  //         <h1 className="text-xl font-semibold">Thanks for submitting!</h1>
-  //         <p className="text-sm text-muted-foreground">Your response has been recorded.</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (submitted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-2">
+          <h1 className="text-xl font-semibold">Thanks for submitting!</h1>
+          <p className="text-sm text-muted-foreground">Your response has been recorded.</p>
+        </div>
+      </div>
+    );
+  }
 
   const sortedFields = [...(form.fields ?? [])].sort(
     (a, b) => parseFloat(a.index) - parseFloat(b.index),
@@ -163,7 +185,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ form_id: 
             <p className="mt-2 text-sm text-muted-foreground">{form.description}</p>
           )}
         </div>
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <FieldGroup>
             {sortedFields.map((field) => (
               <FormFieldInput
@@ -177,7 +199,13 @@ export default function PublicFormPage({ params }: { params: Promise<{ form_id: 
             ))}
           </FieldGroup>
 
-          <Button type="submit" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            onClick={() => {
+              console.log("SUBMIT BUTTON CLICKED");
+            }}
+          >
             Submit
           </Button>
         </form>
