@@ -121,7 +121,7 @@ export const formRouter = router({
       return formFieldService.deleteField(input);
     }),
 
-  getform: publicProcedure
+  getForm: publicProcedure
     .meta({
       openapi: {
         method: "GET",
