@@ -1,5 +1,10 @@
-import { db } from "@repo/database";
-import { submitFormInput, submitFormInputType } from "./model";
+import { db, eq, desc } from "@repo/database";
+import {
+  getFormSubmissionsInput,
+  GetFormSubmissionsInputType,
+  submitFormInput,
+  submitFormInputType,
+} from "./model";
 import { formSubmissionTable } from "@repo/database/models/form-submission";
 
 class FormSubmissionService {
@@ -16,6 +21,20 @@ class FormSubmissionService {
       throw new Error("Something went wrong while saving your submission");
 
     return { id: result[0].id };
+  }
+
+  public async getFormSubmissions(payload: GetFormSubmissionsInputType) {
+    const { formId } = await getFormSubmissionsInput.parseAsync(payload);
+
+    return await db
+      .select({
+        id: formSubmissionTable.id,
+        values: formSubmissionTable.values,
+        createdAt: formSubmissionTable.createdAt,
+      })
+      .from(formSubmissionTable)
+      .where(eq(formSubmissionTable.formId, formId))
+      .orderBy(desc(formSubmissionTable.createdAt));
   }
 }
 export default FormSubmissionService;

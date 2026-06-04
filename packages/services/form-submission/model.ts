@@ -12,4 +12,10 @@ export const submitFormInput = z.object({
     .min(1, "At least one field value is required"),
 });
 
-export type submitFormInputType = z.infer<typeof submitFormInput    >;
+export type submitFormInputType = z.infer<typeof submitFormInput>;
+
+export const getFormSubmissionsInput = z.object({
+  formId: z.string().uuid().describe("UUID of the form"),
+});
+
+export type GetFormSubmissionsInputType = z.infer<typeof getFormSubmissionsInput>;
