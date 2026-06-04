@@ -1,5 +1,5 @@
 import z from "zod";
-import { formFieldService, formService } from "../../services";
+import { formFieldService, formService, formSubmissionService } from "../../services";
 import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
 import {
@@ -14,6 +14,8 @@ import {
   getFormInputModel,
   getFormOutputModel,
   listFormsOutputModel,
+  submitFormInputModel,
+  submitFormOutputModel,
   updateFieldInputModel,
   updateFieldOutputModel,
 } from "./model";
@@ -136,5 +138,19 @@ export const formRouter = router({
       const result = formService.getFormById({ formId: input.formId });
       console.log("result: ", result);
       return result;
+    }),
+
+  submitForm: publicProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: getPath("/submitForm"),
+        tags: TAGS,
+      },
+    })
+    .input(submitFormInputModel)
+    .output(submitFormOutputModel)
+    .mutation(async ({ input }) => {
+      return formSubmissionService.submitForm(input);
     }),
 });
