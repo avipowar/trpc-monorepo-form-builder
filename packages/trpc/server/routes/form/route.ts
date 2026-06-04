@@ -1,6 +1,6 @@
 import z from "zod";
 import { formFieldService, formService } from "../../services";
-import { authenticatedProcedure, router } from "../../trpc";
+import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
 import {
   createFieldInputModel,
@@ -11,6 +11,8 @@ import {
   deleteFieldOutputModel,
   getFieldsInputModel,
   getFieldsOutputModel,
+  getFormInputModel,
+  getFormOutputModel,
   listFormsOutputModel,
   updateFieldInputModel,
   updateFieldOutputModel,
@@ -117,5 +119,19 @@ export const formRouter = router({
     .output(deleteFieldOutputModel)
     .mutation(async ({ input }) => {
       return formFieldService.deleteField(input);
+    }),
+
+  getform: publicProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: getPath("/getForm"),
+        tags: TAGS,
+      },
+    })
+    .input(getFormInputModel)
+    .output(getFormOutputModel)
+    .query(async ({ input }) => {
+      return formService.getFormById({ formId: input.formId });
     }),
 });
