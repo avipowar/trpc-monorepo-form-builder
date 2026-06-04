@@ -25,6 +25,7 @@ class FormSubmissionService {
 
   public async getFormSubmissions(payload: GetFormSubmissionsInputType) {
     const { formId } = await getFormSubmissionsInput.parseAsync(payload);
+    console.log("Submission Form Id:", formId);
 
     return await db
       .select({

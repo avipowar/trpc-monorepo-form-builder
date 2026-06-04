@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { PlusIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -168,9 +169,9 @@ function FieldForm({
   );
 }
 
-export default function FormBuilderPage({ params }: { params: Promise<{ id: string }> }) {
-  // TODO: Debug this line
-  const { id: formId } = use(params);
+export default function FormBuilderPage() {
+  const params = useParams();
+  const formId = params.formId as string;
 
   const { fields, isLoading } = useGetFields(formId);
   const { createFieldAsync, isError: isCreateError, error: createError } = useCreateField(formId);
