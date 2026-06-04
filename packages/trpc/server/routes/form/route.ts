@@ -13,6 +13,8 @@ import {
   getFieldsOutputModel,
   getFormInputModel,
   getFormOutputModel,
+  getFormSubmissionsInputModel,
+  getFormSubmissionsOutputModel,
   listFormsOutputModel,
   submitFormInputModel,
   submitFormOutputModel,
@@ -152,5 +154,20 @@ export const formRouter = router({
     .output(submitFormOutputModel)
     .mutation(async ({ input }) => {
       return formSubmissionService.submitForm(input);
+    }),
+
+  getFormSubmissions: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: getPath("/getFormSubmissions"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(getFormSubmissionsInputModel)
+    .output(getFormSubmissionsOutputModel)
+    .query(async ({ input }) => {
+      return formSubmissionService.getFormSubmissions({ formId: input.formId });
     }),
 });
