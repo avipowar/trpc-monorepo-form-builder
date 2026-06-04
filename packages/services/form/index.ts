@@ -1,12 +1,14 @@
-import db, { eq } from "@repo/database";
+import { db, eq, asc } from "@repo/database";
 import {
   createFormInput,
   CreateFormInputType,
+  GetFormByIdInputType,
+  getFormByIdInput,
   listFromsByUserIdInput,
   ListFromsByUserIdInput,
 } from "./model";
 import { formsTable } from "@repo/database/models/form";
-import { title } from "node:process";
+import { formFieldsTable } from "@repo/database/models/form-field";
 
 class FormService {
   public async createForm(payload: CreateFormInputType) {
@@ -37,6 +39,43 @@ class FormService {
       .where(eq(formsTable.createdBy, userId));
 
     return forms;
+  }
+
+  public async getFormById(payload: GetFormByIdInputType) {
+    const { formId } = await getFormByIdInput.parseAsync(payload);
+
+    const rows = await db
+      .select({
+        id: formsTable.id,
+        title: formsTable.title,
+        description: formsTable.description,
+        createdAt: formsTable.createdAt,
+        updatedAt: formsTable.updatedAt,
+        field: {
+          id: formFieldsTable.id,
+          label: formFieldsTable.label,
+          labelKey: formFieldsTable.labelKey,
+          type: formFieldsTable.type,
+          description: formFieldsTable.description,
+          placeholder: formFieldsTable.placeholder,
+          isRequired: formFieldsTable.isRequired,
+          index: formFieldsTable.index,
+        },
+      })
+      .from(formsTable)
+      .leftJoin(formFieldsTable, eq(formFieldsTable.formId, formsTable.id))
+      .where(eq(formsTable.id, formId))
+      .orderBy(asc(formFieldsTable.index));
+
+    if (rows.length === 0) return null;
+
+    const { id, title, description, createdAt, updatedAt } = rows[0]!;
+
+    const fields = rows
+      .filter((r) => r.field?.id !== null)
+      .map((r) => r.field as NonNullable<typeof r.field>);
+
+    return { id, title, description, createdAt, updatedAt, fields };
   }
 }
 
