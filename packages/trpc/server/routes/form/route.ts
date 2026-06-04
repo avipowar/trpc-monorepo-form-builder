@@ -132,6 +132,9 @@ export const formRouter = router({
     .input(getFormInputModel)
     .output(getFormOutputModel)
     .query(async ({ input }) => {
-      return formService.getFormById({ formId: input.formId });
+      console.log("input:", input);
+      const result = formService.getFormById({ formId: input.formId });
+      console.log("result: ", result);
+      return result;
     }),
 });

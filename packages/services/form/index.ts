@@ -72,8 +72,13 @@ class FormService {
     const { id, title, description, createdAt, updatedAt } = rows[0]!;
 
     const fields = rows
-      .filter((r) => r.field?.id !== null)
+      .filter((r) => r.field?.id != null)
       .map((r) => r.field as NonNullable<typeof r.field>);
+
+    console.log(
+      "hii i am here",
+      JSON.stringify({ id, title, description, createdAt, updatedAt, fields }, null, 2),
+    );
 
     return { id, title, description, createdAt, updatedAt, fields };
   }
