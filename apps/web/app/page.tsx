@@ -1,27 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useUser } from "~/hooks/api/auth";
-
-export default function Home() {
-  const { user } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user && user.id) {
-      router.replace("/dashboard");
-    } else {
-      router.replace("/login");
-    }
-  }, [user, router]); 
-
+export default function HomePage() {
   return (
-    <main className="min-h-screen min-w-screen flex justify-center items-center">
-      <div>
-        <h1 className="text-3xl">Streamyst - Stream in Style</h1>
-        <h1>{JSON.stringify(user, null, 2)}</h1>
-      </div>
-    </main>
+    <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center">
+      <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
+        Tokyo Night Form Builder ⛩️
+      </h1>
+      <p className="mt-4 text-lg text-neutral-400">porject is ready for the new strture</p>
+    </div>
   );
 }
