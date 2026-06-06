@@ -49,7 +49,7 @@
     --popover: #0c0c14;
     --popover-foreground: #f8f9fa;
 
-    --primary: #bb9af7; /* निऑन सॅकुरा गुलाबी */
+    --primary: #bb9af7;
     --primary-foreground: #0a0a0f;
 
     --secondary: #1a1b26;
@@ -59,7 +59,7 @@
     --muted-foreground: #787c99;
 
     --accent: #24283b;
-    --accent-foreground: #73daca; /* इलेक्ट्रिक निऑन सायन */
+    --accent-foreground: #73daca; 
 
     --destructive: #f7768e;
     --destructive-foreground: #f8f9fa;

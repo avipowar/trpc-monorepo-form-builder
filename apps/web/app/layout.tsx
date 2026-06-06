@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GlobalProviders } from "~/providers/global";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Tokyo Night Form Builder",
