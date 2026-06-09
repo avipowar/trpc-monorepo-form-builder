@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import {
   Plus,
   Filter,
@@ -43,7 +44,10 @@ const MOCK_FORMS = [
 ];
 
 export default function DashboardPage() {
+  const { theme } = useTheme();
   const [activeFilter, setActiveFilter] = useState("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formTitle, setFormTitle] = useState("");
 
   const filteredForms = MOCK_FORMS.filter((form) => {
     if (activeFilter === "all") return true;
@@ -83,7 +87,10 @@ export default function DashboardPage() {
               Create, manage, and analyze your forms in one place.
             </p>
           </div>
-          <button className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg hover:scale-105 transition-all">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg hover:scale-105 transition-all"
+          >
             <Plus className="h-4 w-4" /> Create New Form
           </button>
         </div>
@@ -149,6 +156,65 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
+        {/* MODERN MINIMALIST MODAL - FULLY SYMMETRICAL */}
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md transition-all duration-300">
+            {/* Main Container */}
+            <div
+              style={{
+                backgroundColor: theme === "dark" ? "#121214" : "#ffffff",
+                borderColor: theme === "dark" ? "#232326" : "#e4e4e7",
+              }}
+              className="w-full max-w-md rounded-2xl border p-6 shadow-2xl transition-all animate-in zoom-in-95 duration-200"
+            >
+              {/* Header Section */}
+              <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                Create New Form
+              </h2>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 mb-6">
+                Give your new form a clean, minimal title.
+              </p>
+
+              <div className="space-y-3">
+                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 block">
+                  Form Title
+                </label>
+                <input
+                  type="text"
+                  value={formTitle}
+                  onChange={(e) => setFormTitle(e.target.value)}
+                  placeholder="e.g., Customer Feedback Form ☕"
+                  className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-4 py-3 text-sm text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-600 transition-all duration-200"
+                />
+              </div>
+
+              {/* Action Buttons Section */}
+              <div className="mt-8 flex justify-end gap-3 border-t border-zinc-100 dark:border-zinc-800/60 pt-4">
+                <button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setFormTitle("");
+                  }}
+                  className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-5 py-2.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-50 cursor-pointer transition-all duration-300"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  disabled={!formTitle.trim()}
+                  onClick={() => {
+                    alert(`Creating Form: ${formTitle}`);
+                    setIsModalOpen(false);
+                    setFormTitle("");
+                  }}
+                  className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-5 py-2.5 text-xs font-semibold text-zinc-900 dark:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 active:scale-95 disabled:opacity-20 disabled:hover:bg-transparent cursor-pointer disabled:cursor-not-allowed transition-all duration-300"
+                >
+                  Create Form
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
