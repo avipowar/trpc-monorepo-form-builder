@@ -32,7 +32,7 @@ export default function DashboardPage() {
       {/* १. SIDEBAR SECTION */}
       <aside className="w-64 border-r border-border bg-card/30 p-6 flex flex-col justify-between hidden md:flex">
         <div className="space-y-8">
-          <div className="text-xl font-bold tracking-wider text-primary">TokyoForms</div>
+          <div className="text-xl font-bold tracking-wider text-primary">ChaiForms</div>
           <nav className="space-y-2">
             <button className="flex w-full items-center gap-3 rounded-xl bg-secondary px-4 py-3 text-sm font-medium text-foreground">
               <LayoutDashboard className="h-4 w-4" /> Dashboard
