@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useCreateForm, useListForms } from "../../hooks/api/form";
 import { useUser } from "../../hooks/api/auth";
 import { Plus, LayoutDashboard, FileText, Settings, Search } from "lucide-react";
+import { DashboardSkeleton } from "~/components/dashboard-skeleton";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { theme } = useTheme();
   const [activeFilter, setActiveFilter] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,6 +22,20 @@ export default function DashboardPage() {
   const { user, isLoading: isUserLoading } = useUser();
   const { forms, isLoading: isFormsLoading } = useListForms();
   const { createFormAsync, status } = useCreateForm();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading) {
+    return <DashboardSkeleton />;
+  }
+
+  if (!user) {
+    return null;
+  }
 
   // Filtering the real database forms
   const filteredForms = (forms || []).filter((form) => {
@@ -48,9 +65,7 @@ export default function DashboardPage() {
 
         <div className="rounded-xl bg-secondary/40 p-4 border border-border/60">
           <p className="text-xs text-muted-foreground">Logged in as</p>
-          <p className="text-sm font-medium truncate">
-            {isUserLoading ? "Loading..." : user?.fullName || "Avinash Powar"}
-          </p>
+          <p className="text-sm font-medium truncate">{user?.fullName || "Avinash Powar"}</p>
         </div>
       </aside>
 
