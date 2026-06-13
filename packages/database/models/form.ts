@@ -7,6 +7,8 @@ export const formsTable = pgTable("forms", {
   title: varchar("title", { length: 45 }).notNull(),
   description: varchar("discription", { length: 300 }),
 
+  status: varchar("status", { length: 20 }).default("draft").notNull(),
+
   createdBy: uuid("created_by").references(() => usersTable.id),
 
   createdAt: timestamp("created_at").defaultNow(),

@@ -14,7 +14,7 @@ export const useCreateForm = () => {
     status,
   } = trpc.form.createForm.useMutation({
     onSuccess: async () => {
-      await utils.form.invalidate();
+      await utils.form.listForms.invalidate();
     },
   });
 
