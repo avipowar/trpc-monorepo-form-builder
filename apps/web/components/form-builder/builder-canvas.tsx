@@ -1,10 +1,9 @@
 "use client";
 
-import { User, Hash, Mail, Lock, Trash2 } from "lucide-react";
+import { User, Hash, Mail, Lock, Trash2, Pencil } from "lucide-react";
 
 type FieldType = "TEXT" | "NUMBER" | "EMAIL" | "PASSWORD" | "YES_NO";
 
-// 👑 Updated to perfectly match DB types and page.tsx interface without using 'any'
 interface FormField {
   id: string;
   label: string;
@@ -19,9 +18,16 @@ interface FormField {
 interface BuilderCanvasProps {
   fields: FormField[];
   onRemoveField: (id: string) => void;
+  onSelectField: (id: string) => void;
+  selectedFieldId: string | null;
 }
 
-export function BuilderCanvas({ fields, onRemoveField }: BuilderCanvasProps) {
+export function BuilderCanvas({
+  fields,
+  onRemoveField,
+  onSelectField,
+  selectedFieldId,
+}: BuilderCanvasProps) {
   const getFieldIcon = (type: FieldType) => {
     switch (type) {
       case "TEXT":
@@ -46,14 +52,15 @@ export function BuilderCanvas({ fields, onRemoveField }: BuilderCanvasProps) {
   };
 
   return (
-    <main className="flex-1 bg-zinc-100/40 dark:bg-[#09090b] p-10 overflow-y-auto flex justify-center items-start">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121214] p-8 shadow-xl transition-all h-auto flex flex-col">
+    <main className="flex-1 bg-zinc-50 dark:bg-[#09090b] p-12 overflow-y-auto flex justify-center items-start relative">
+      {/* Clean and centered standalone form container box */}
+      <div className="w-full max-w-md rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121214] p-8 shadow-xl h-auto flex flex-col mt-6">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             Live Preview Form
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-            Click items on the left panel to populate fields. ☕
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+            Click edit icon to change field settings
           </p>
         </div>
 
@@ -63,50 +70,72 @@ export function BuilderCanvas({ fields, onRemoveField }: BuilderCanvasProps) {
           </div>
         ) : (
           <div className="space-y-5 flex-1">
-            {fields.map((field) => (
-              <div key={field.id} className="space-y-2 relative group transition-all duration-150">
-                <div className="flex justify-between items-center">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 block">
-                    {field.label}
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => onRemoveField(field.id)}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-zinc-400 hover:text-red-500 transition-opacity rounded cursor-pointer"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
+            {fields.map((field) => {
+              return (
+                <div
+                  key={field.id}
+                  className="space-y-2 relative group p-2 rounded-xl transition-all"
+                >
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 block">
+                      {field.label}
+                    </label>
 
-                {field.type !== "YES_NO" ? (
-                  <div className="relative">
-                    {getFieldIcon(field.type)}
-                    <input
-                      type={field.type === "PASSWORD" ? "password" : "text"}
-                      disabled
-                      placeholder={field.placeholder ?? undefined} // Safe fall-through from null to undefined for HTML inputs
-                      className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 py-3 pl-11 pr-4 text-sm text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none cursor-not-allowed shadow-sm"
-                    />
+                    {/* Action Pill Control */}
+                    <div className="flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-0.5 shadow-sm">
+                      <button
+                        type="button"
+                        onClick={() => onSelectField(field.id)}
+                        className="p-1.5 rounded-md text-zinc-400 hover:text-blue-500 hover:bg-white dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </button>
+
+                      <div className="w-[1px] h-3 bg-zinc-200 dark:bg-zinc-800" />
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onRemoveField(field.id);
+                        }}
+                        className="p-1.5 rounded-md text-zinc-400 hover:text-red-500 hover:bg-white dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
-                ) : (
-                  <div className="flex items-center gap-3 py-1 px-1">
-                    <input
-                      type="checkbox"
-                      disabled
-                      className="rounded-md border-zinc-200 dark:border-zinc-800 h-4 w-4 bg-zinc-50 dark:bg-zinc-950 cursor-not-allowed text-zinc-900"
-                    />
-                    <span className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
-                      Consent option checkbox setup
-                    </span>
-                  </div>
-                )}
-              </div>
-            ))}
+
+                  {field.type !== "YES_NO" ? (
+                    <div className="relative pointer-events-none">
+                      {getFieldIcon(field.type)}
+                      <input
+                        type={field.type === "PASSWORD" ? "password" : "text"}
+                        disabled
+                        placeholder={field.placeholder ?? undefined}
+                        className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 py-3 pl-11 pr-4 text-sm text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none shadow-sm"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 py-1 px-1 pointer-events-none">
+                      <input
+                        type="checkbox"
+                        disabled
+                        className="rounded-md border-zinc-200 dark:border-zinc-800 h-4 w-4 bg-zinc-50 dark:bg-zinc-950 text-zinc-900"
+                      />
+                      <span className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+                        Consent option checkbox setup
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
 
             <button
               type="button"
               disabled
-              className="w-full mt-6 flex items-center justify-center gap-2 rounded-xl bg-zinc-900 dark:bg-zinc-50 py-3 text-sm font-semibold text-zinc-50 dark:text-zinc-900 opacity-40 cursor-not-allowed shadow-md"
+              className="w-full mt-6 flex items-center justify-center gap-2 rounded-xl bg-zinc-900 dark:bg-zinc-50 py-3 text-sm font-semibold text-zinc-50 dark:text-zinc-900 opacity-40 shadow-md"
             >
               Submit Form
             </button>
