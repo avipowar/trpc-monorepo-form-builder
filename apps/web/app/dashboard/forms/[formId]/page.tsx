@@ -6,7 +6,7 @@ import { BuilderSidebar } from "~/components/form-builder/builder-sidebar";
 import { BuilderCanvas } from "~/components/form-builder/builder-canvas";
 import { useCreateField, useGetFields, useDeleteField, useUpdateField } from "~/hooks/api/form";
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, ArrowRight } from "lucide-react";
 
 type FieldType = "TEXT" | "NUMBER" | "EMAIL" | "PASSWORD" | "YES_NO";
 
@@ -17,6 +17,7 @@ export default function FormBuilderPage() {
 
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
   const [localLabel, setLocalLabel] = useState("");
   const [localPlaceholder, setLocalPlaceholder] = useState("");
@@ -92,8 +93,7 @@ export default function FormBuilderPage() {
   };
 
   const handleSaveConfiguration = () => {
-    alert("Configuration saved successfully!");
-    router.push("/dashboard");
+    setIsSaveModalOpen(true);
   };
 
   if (isLoading) {
@@ -129,9 +129,7 @@ export default function FormBuilderPage() {
       {/* Fullscreen Backdrop Blur Modal Overlay */}
       {isEditModalOpen && selectedField && (
         <div className="fixed inset-0 w-screen h-screen bg-zinc-950/60 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-150">
-          {/* Modal Container Box */}
           <div className="w-full max-w-sm bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 flex flex-col space-y-6">
-            {/* Modal Header */}
             <div className="flex justify-between items-center pb-3 border-b border-zinc-100 dark:border-zinc-800/60">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
@@ -150,7 +148,6 @@ export default function FormBuilderPage() {
               </button>
             </div>
 
-            {/* Modal Body Inputs */}
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
@@ -178,7 +175,6 @@ export default function FormBuilderPage() {
                 </div>
               )}
 
-              {/* Clean and Plain Transparent Required Toggle Row */}
               <div className="flex items-center justify-between py-2 px-1 bg-transparent">
                 <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
                   Required Field
@@ -192,7 +188,6 @@ export default function FormBuilderPage() {
               </div>
             </div>
 
-            {/* Modal Footer - Outlined Style Buttons */}
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-800/60">
               <button
                 type="button"
@@ -207,6 +202,54 @@ export default function FormBuilderPage() {
                 className="px-4 py-2 rounded-xl text-xs font-semibold text-blue-500 bg-transparent border border-blue-500/40 hover:border-blue-500 hover:bg-blue-500/5 transition-all cursor-pointer shadow-sm"
               >
                 Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isSaveModalOpen && (
+        <div className="fixed inset-0 w-screen h-screen bg-zinc-950/60 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-150">
+          <div className="w-full max-w-sm bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 flex flex-col items-center text-center space-y-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 animate-in zoom-in duration-200">
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2.5"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
+                Configuration Saved!
+              </h3>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                Your form configuration has been successfully synchronized with the database.
+              </p>
+            </div>
+
+            <div className="flex gap-3 w-full pt-2">
+              <button
+                type="button"
+                onClick={() => setIsSaveModalOpen(false)}
+                className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-2.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 cursor-pointer transition-all"
+              >
+                Keep Editing
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSaveModalOpen(false);
+                  router.push("/dashboard");
+                }}
+                className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 hover:border-emerald-500 bg-transparent px-4 py-2.5 text-xs font-semibold text-emerald-500 hover:bg-emerald-500/5 cursor-pointer shadow-sm active:scale-95 transition-all"
+              >
+                Dashboard <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>

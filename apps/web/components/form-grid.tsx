@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Trash2 } from "lucide-react";
+import { Trash2, AlertTriangle } from "lucide-react";
 
 interface Form {
   id: string;
@@ -17,6 +18,8 @@ interface FormGridProps {
 }
 
 export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
+  const [formToDelete, setFormToDelete] = useState<string | null>(null);
+
   return (
     <>
       {isLoading ? (
@@ -44,9 +47,7 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (confirm("Are you sure you want to delete this form?")) {
-                      onDelete(form.id);
-                    }
+                    setFormToDelete(form.id);
                   }}
                   className="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer z-10"
                 >
@@ -66,6 +67,42 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
               </div>
             </Link>
           ))}
+        </div>
+      )}
+
+      {formToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md transition-all duration-300 p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121214] p-6 shadow-2xl animate-in zoom-in-95 duration-200 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 text-red-500 mb-4">
+              <AlertTriangle className="h-6 w-6" />
+            </div>
+
+            <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">Delete Form</h3>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2 mb-6">
+              Are you sure you want to delete this form? This action cannot be undone.
+            </p>
+
+            <div className="flex gap-3 justify-center">
+              <button
+                type="button"
+                onClick={() => setFormToDelete(null)}
+                className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-2.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 cursor-pointer transition-all"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onDelete(formToDelete);
+                  setFormToDelete(null);
+                }}
+                className="w-full rounded-xl border border-red-500/40 hover:border-red-500 bg-transparent px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-500/5 cursor-pointer shadow-sm active:scale-95 transition-all"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>
