@@ -91,6 +91,11 @@ export default function FormBuilderPage() {
     }
   };
 
+  const handleSaveConfiguration = () => {
+    alert("Configuration saved successfully!");
+    router.push("/dashboard");
+  };
+
   if (isLoading) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-sm font-medium">
@@ -101,7 +106,11 @@ export default function FormBuilderPage() {
 
   return (
     <div className="h-screen w-full flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50 overflow-hidden transition-colors duration-200">
-      <BuilderNavbar formId={formId} onBack={() => router.push("/dashboard")} />
+      <BuilderNavbar
+        formId={formId}
+        onBack={() => router.push("/dashboard")}
+        onSave={handleSaveConfiguration}
+      />
 
       <div className="flex-1 flex h-[calc(100vh-64px)] w-full overflow-hidden">
         <BuilderSidebar onAddField={addField} />
