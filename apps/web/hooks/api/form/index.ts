@@ -30,6 +30,36 @@ export const useCreateForm = () => {
   };
 };
 
+export const useDeleteForm = () => {
+  const utils = trpc.useUtils();
+
+  const {
+    mutateAsync: deleteFormAsync,
+    mutate: deleteForm,
+    error,
+    failureCount,
+    isError,
+    isIdle,
+    isSuccess,
+    status,
+  } = trpc.form.deleteForm.useMutation({
+    onSuccess: async () => {
+      await utils.form.listForms.invalidate();
+    },
+  });
+
+  return {
+    deleteFormAsync,
+    deleteForm,
+    error,
+    failureCount,
+    isError,
+    isIdle,
+    isSuccess,
+    status,
+  };
+};
+
 export const useListForms = () => {
   const {
     data: forms = [],

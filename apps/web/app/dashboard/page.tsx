@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useCreateForm, useListForms } from "../../hooks/api/form";
+import { useCreateForm, useListForms, useDeleteForm } from "../../hooks/api/form";
 import { CreateFormModal } from "~/components/create-form-modal";
 import { useUser } from "../../hooks/api/auth";
 import { Plus, LayoutDashboard, FileText, Settings, Search } from "lucide-react";
@@ -21,6 +21,15 @@ export default function DashboardPage() {
   // Real Hooks Integration
   const { user, isLoading: isUserLoading } = useUser();
   const { forms, isLoading: isFormsLoading } = useListForms();
+  const { deleteFormAsync } = useDeleteForm();
+
+  const handleDeleteForm = async (id: string) => {
+    try {
+      await deleteFormAsync({ id });
+    } catch (error) {
+      console.error("Failed to delete form:", error);
+    }
+  };
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -70,7 +79,7 @@ export default function DashboardPage() {
         <FilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
 
         {/* ४. DYNAMIC FORMS GRID SECTION */}
-        <FormGrid forms={filteredForms} isLoading={isFormsLoading} />
+        <FormGrid forms={filteredForms} isLoading={isFormsLoading} onDelete={handleDeleteForm} />
 
         {/* ५. MODERN MINIMALIST MODAL - WITH DESCRIPTION FIELD */}
         <CreateFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

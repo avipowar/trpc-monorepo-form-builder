@@ -124,3 +124,11 @@ export const getFormSubmissionsOutputModel = z.array(
       .nullable(),
   }),
 );
+
+export const deleteFormInputModel = z.object({
+  id: z.string().uuid().describe("UUID of the form to delete"),
+});
+
+export const deleteFormOutputModel = z.object({
+  id: z.string().describe("ID of the deleted form"),
+});

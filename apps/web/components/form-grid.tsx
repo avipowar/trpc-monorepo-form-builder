@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Trash2 } from "lucide-react";
 
 interface Form {
   id: string;
@@ -12,9 +13,10 @@ interface Form {
 interface FormGridProps {
   forms: Form[];
   isLoading: boolean;
+  onDelete: (id: string) => void;
 }
 
-export function FormGrid({ forms, isLoading }: FormGridProps) {
+export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
   return (
     <>
       {isLoading ? (
@@ -37,10 +39,21 @@ export function FormGrid({ forms, isLoading }: FormGridProps) {
                 <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-500">
                   Draft
                 </span>
-                <span className="text-xs text-muted-foreground font-mono">
-                  {form.createdAt ? new Date(form.createdAt).toLocaleDateString() : "Just now"}
-                </span>
+
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (confirm("Are you sure you want to delete this form?")) {
+                      onDelete(form.id);
+                    }
+                  }}
+                  className="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer z-10"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
               </div>
+
               <h3 className="mt-4 font-semibold text-lg tracking-tight group-hover:text-primary transition-colors truncate">
                 {form.title}
               </h3>
