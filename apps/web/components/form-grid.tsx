@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 interface Form {
   id: string;
   title: string;
@@ -26,9 +28,10 @@ export function FormGrid({ forms, isLoading }: FormGridProps) {
       ) : (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {forms.map((form) => (
-            <div
+            <Link
               key={form.id}
-              className="group relative rounded-2xl border border-border bg-card p-6 transition-all hover:scale-[1.02] hover:shadow-lg dark:hover:border-primary/40"
+              href={`/dashboard/forms/${form.id}`}
+              className="group relative rounded-2xl border border-border bg-card p-6 transition-all hover:scale-[1.02] hover:shadow-lg dark:hover:border-primary/40 block cursor-pointer"
             >
               <div className="flex items-center justify-between">
                 <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-500">
@@ -48,7 +51,7 @@ export function FormGrid({ forms, isLoading }: FormGridProps) {
                 <span>Submissions</span>
                 <span className="font-bold text-foreground text-sm font-mono">0</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

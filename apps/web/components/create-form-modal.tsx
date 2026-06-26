@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 import { useCreateForm } from "../hooks/api/form";
 
 interface CreateFormModalProps {
@@ -11,6 +12,7 @@ interface CreateFormModalProps {
 
 export function CreateFormModal({ isOpen, onClose }: CreateFormModalProps) {
   const { theme } = useTheme();
+  const router = useRouter();
   const [formTitle, setFormTitle] = useState("");
   const [formDescription, setFormDescription] = useState("");
   const { createFormAsync, status, error: createFormError } = useCreateForm();
@@ -84,13 +86,18 @@ export function CreateFormModal({ isOpen, onClose }: CreateFormModalProps) {
             disabled={!formTitle.trim() || status === "pending"}
             onClick={async () => {
               try {
-                await createFormAsync({
+                const newForm = await createFormAsync({
                   title: formTitle,
                   description: formDescription.trim() || undefined,
                 });
+
                 onClose();
                 setFormTitle("");
                 setFormDescription("");
+
+                if (newForm && newForm.id) {
+                  router.push(`/dashboard/forms/${newForm.id}`);
+                }
               } catch (error) {
                 console.error("Failed to create form:", error);
               }
