@@ -1,20 +1,25 @@
 "use client";
 
-import { User, Hash, Mail, Lock, CheckSquare, Plus } from "lucide-react";
+import { User, Hash, Mail, Lock, CheckSquare, Plus, Phone } from "lucide-react";
 
 type FieldType = "TEXT" | "NUMBER" | "EMAIL" | "PASSWORD" | "YES_NO";
 
+type SidebarFieldType = FieldType | "AGE" | "PHONE";
+
 interface BuilderSidebarProps {
-  onAddField: (type: FieldType) => void;
+  onAddField: (type: any) => void;
 }
 
 export function BuilderSidebar({ onAddField }: BuilderSidebarProps) {
-  const getSidebarIcon = (type: FieldType) => {
+  const getSidebarIcon = (type: SidebarFieldType) => {
     switch (type) {
       case "TEXT":
         return <User className="h-4 w-4" />;
       case "NUMBER":
+      case "AGE":
         return <Hash className="h-4 w-4" />;
+      case "PHONE":
+        return <Phone className="h-4 w-4" />;
       case "EMAIL":
         return <Mail className="h-4 w-4" />;
       case "PASSWORD":
@@ -31,7 +36,9 @@ export function BuilderSidebar({ onAddField }: BuilderSidebarProps) {
           Form Components
         </h2>
         <div className="space-y-1.5">
-          {(["TEXT", "NUMBER", "EMAIL", "PASSWORD", "YES_NO"] as FieldType[]).map((type) => (
+          {(
+            ["TEXT", "NUMBER", "AGE", "PHONE", "EMAIL", "PASSWORD", "YES_NO"] as SidebarFieldType[]
+          ).map((type) => (
             <button
               key={type}
               onClick={() => onAddField(type)}

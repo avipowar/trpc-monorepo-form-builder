@@ -1,6 +1,6 @@
 "use client";
 
-import { User, Hash, Mail, Lock, Trash2, Pencil } from "lucide-react";
+import { User, Hash, Mail, Lock, Trash2, Pencil, Phone } from "lucide-react";
 
 type FieldType = "TEXT" | "NUMBER" | "EMAIL" | "PASSWORD" | "YES_NO";
 
@@ -28,24 +28,22 @@ export function BuilderCanvas({
   onSelectField,
   selectedFieldId,
 }: BuilderCanvasProps) {
-  const getFieldIcon = (type: FieldType) => {
+  const getFieldIcon = (type: FieldType, label: string) => {
+    const iconClass = "absolute left-4 top-3.5 h-4 w-4 text-zinc-400 dark:text-zinc-600";
+
+    if (label.toUpperCase().includes("PHONE")) {
+      return <Phone className={iconClass} />;
+    }
+
     switch (type) {
       case "TEXT":
-        return (
-          <User className="absolute left-4 top-3.5 h-4 w-4 text-zinc-400 dark:text-zinc-600" />
-        );
+        return <User className={iconClass} />;
       case "NUMBER":
-        return (
-          <Hash className="absolute left-4 top-3.5 h-4 w-4 text-zinc-400 dark:text-zinc-600" />
-        );
+        return <Hash className={iconClass} />;
       case "EMAIL":
-        return (
-          <Mail className="absolute left-4 top-3.5 h-4 w-4 text-zinc-400 dark:text-zinc-600" />
-        );
+        return <Mail className={iconClass} />;
       case "PASSWORD":
-        return (
-          <Lock className="absolute left-4 top-3.5 h-4 w-4 text-zinc-400 dark:text-zinc-600" />
-        );
+        return <Lock className={iconClass} />;
       default:
         return null;
     }
@@ -53,7 +51,6 @@ export function BuilderCanvas({
 
   return (
     <main className="flex-1 bg-zinc-50 dark:bg-[#09090b] p-12 overflow-y-auto flex justify-center items-start relative">
-      {/* Clean and centered standalone form container box */}
       <div className="w-full max-w-md rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121214] p-8 shadow-xl h-auto flex flex-col mt-6">
         <div className="text-center mb-8">
           <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
@@ -81,7 +78,6 @@ export function BuilderCanvas({
                       {field.label}
                     </label>
 
-                    {/* Action Pill Control */}
                     <div className="flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-0.5 shadow-sm">
                       <button
                         type="button"
@@ -90,9 +86,7 @@ export function BuilderCanvas({
                       >
                         <Pencil className="h-3.5 w-3.5" />
                       </button>
-
                       <div className="w-[1px] h-3 bg-zinc-200 dark:bg-zinc-800" />
-
                       <button
                         type="button"
                         onClick={(e) => {
@@ -108,7 +102,7 @@ export function BuilderCanvas({
 
                   {field.type !== "YES_NO" ? (
                     <div className="relative pointer-events-none">
-                      {getFieldIcon(field.type)}
+                      {getFieldIcon(field.type, field.label)}
                       <input
                         type={field.type === "PASSWORD" ? "password" : "text"}
                         disabled

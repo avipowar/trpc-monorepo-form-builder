@@ -41,21 +41,40 @@ export default function FormBuilderPage() {
   }, [selectedFieldId, selectedField]);
 
   // Add Field directly to DB
-  const addField = async (type: FieldType) => {
-    const defaultData = {
-      TEXT: { label: "Full Name", placeholder: "Avinash Powar" },
-      NUMBER: { label: "Age / Phone", placeholder: "24" },
-      EMAIL: { label: "Email Address", placeholder: "avinash@example.com" },
-      PASSWORD: { label: "Password", placeholder: "••••••••" },
-      YES_NO: { label: "I agree to the terms and conditions", placeholder: "" },
-    }[type];
+  const addField = async (type: FieldType | "PHONE" | "AGE") => {
+    let actualType: FieldType = type as FieldType;
+    let defaultLabel = "";
+    let defaultPlaceholder = "";
+
+    if (type === "PHONE") {
+      actualType = "NUMBER";
+      defaultLabel = "Phone Number";
+      defaultPlaceholder = "Enter your phone number";
+    } else if (type === "AGE") {
+      actualType = "NUMBER";
+      defaultLabel = "Age";
+      defaultPlaceholder = "Enter your age";
+    } else {
+      const defaultData = {
+        TEXT: { label: "Full Name", placeholder: "Avinash Powar" },
+        NUMBER: { label: "Number Field", placeholder: "Enter a number" },
+        EMAIL: { label: "Email Address", placeholder: "avinash@example.com" },
+        PASSWORD: { label: "Password", placeholder: "••••••••" },
+        YES_NO: { label: "I agree to the terms and conditions", placeholder: "" },
+      }[type as FieldType];
+
+      if (defaultData) {
+        defaultLabel = defaultData.label;
+        defaultPlaceholder = defaultData.placeholder;
+      }
+    }
 
     try {
       await createFieldAsync({
         formId,
-        type,
-        label: defaultData.label,
-        placeholder: defaultData.placeholder,
+        type: actualType,
+        label: defaultLabel,
+        placeholder: defaultPlaceholder,
       });
     } catch (err) {
       console.error("Error saving field:", err);
