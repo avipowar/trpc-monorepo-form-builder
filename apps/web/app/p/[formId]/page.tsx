@@ -1,12 +1,13 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useGetForm, useSubmitForm } from "~/hooks/api/form";
-import { CheckCircle2, Loader2, User, Hash, Mail, Lock, HelpCircle } from "lucide-react";
+import { CheckCircle2, Loader2, User, Hash, Mail, Lock, HelpCircle, ArrowLeft } from "lucide-react";
 
 export default function PublicFormPage() {
   const params = useParams();
+  const router = useRouter();
   const formId = params.formId as string;
 
   const [formValues, setFormValues] = useState<Record<string, string>>({});
@@ -85,14 +86,23 @@ export default function PublicFormPage() {
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Your response has been successfully recorded.
           </p>
+
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2 transition-all cursor-pointer bg-zinc-100/50 dark:bg-zinc-900/50"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Go to Dashboard
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="dark min-h-screen w-full bg-zinc-50 dark:bg-[#09090b] p-6 sm:p-12 overflow-y-auto flex justify-center items-center relative">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121214] p-8 shadow-xl h-auto flex flex-col mt-6">
+    <div className="dark min-h-screen w-full bg-zinc-50 dark:bg-[#09090b] p-6 sm:p-12 overflow-y-auto flex flex-col justify-center items-center">
+      {/* मुख्य फॉर्म कार्ड बॉक्स */}
+      <div className="w-full max-w-md rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121214] p-8 shadow-xl h-auto flex flex-col">
+        {/* फॉर्म हेडर */}
         <div className="text-center mb-8">
           <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 capitalize">
             {form.title}
@@ -102,6 +112,7 @@ export default function PublicFormPage() {
           )}
         </div>
 
+        {/* फॉर्म बॉडी */}
         <form onSubmit={handleSubmit} className="space-y-5 flex-1">
           {form.fields.map((field) => (
             <div key={field.id} className="space-y-2 relative rounded-xl transition-all">
@@ -153,6 +164,7 @@ export default function PublicFormPage() {
             </div>
           ))}
 
+          {/* सबमिट बटन */}
           <button
             type="submit"
             disabled={submitStatus === "pending"}
@@ -164,6 +176,18 @@ export default function PublicFormPage() {
               "Submit Form"
             )}
           </button>
+
+          {/* 🎯 मॅजिक चेंज: सबमिट बटनाच्या खाली एकदम सेंटरला कडक 'Back to Dashboard' लिंक */}
+          <div className="pt-2 text-center">
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard")}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-400 hover:text-zinc-950 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors cursor-pointer group select-none"
+            >
+              <ArrowLeft className="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-300 transition-transform group-hover:-translate-x-0.5" />
+              Back to Dashboard
+            </button>
+          </div>
         </form>
       </div>
     </div>
