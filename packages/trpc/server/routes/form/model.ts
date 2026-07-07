@@ -137,11 +137,13 @@ export const listAllSubmissionsOutputModel = z.array(
   z.object({
     id: z.string(),
     formId: z.string().uuid().nullable(),
+    formTitle: z.string().nullable().optional(),
     createdAt: z.date().nullable(),
     values: z
       .array(
         z.object({
           formFieldId: z.string(),
+          label: z.string().nullable().optional(),
           value: z.string(),
         }),
       )

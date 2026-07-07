@@ -6,6 +6,8 @@ import {
   submitFormInputType,
 } from "./model";
 import { formSubmissionTable } from "@repo/database/models/form-submission";
+import { formFieldsTable } from "@repo/database/models/form-field";
+import { formsTable } from "@repo/database/models/form";
 
 class FormSubmissionService {
   public async submitForm(payload: submitFormInputType) {
@@ -39,7 +41,7 @@ class FormSubmissionService {
   }
 
   public async listAllSubmissions() {
-    const result = await db
+    const submissions = await db
       .select({
         id: formSubmissionTable.id,
         formId: formSubmissionTable.formId,
@@ -49,11 +51,40 @@ class FormSubmissionService {
       .from(formSubmissionTable)
       .orderBy(desc(formSubmissionTable.createdAt));
 
-    return result as unknown as {
+    const fields = await db
+      .select({ id: formFieldsTable.id, label: formFieldsTable.label })
+      .from(formFieldsTable);
+    const forms = await db.select({ id: formsTable.id, title: formsTable.title }).from(formsTable);
+
+    const fieldMap = new Map(fields.map((f) => [f.id, f.label]));
+    const formMap = new Map(forms.map((f) => [f.id, f.title]));
+
+    const mappedResult = submissions.map((sub) => {
+      const rawValues = sub.values as { formFieldId: string; value: string }[] | null;
+
+      const mappedValues = rawValues
+        ? rawValues.map((v) => ({
+            formFieldId: v.formFieldId,
+            label: fieldMap.get(v.formFieldId) || "Field",
+            value: v.value,
+          }))
+        : null;
+
+      return {
+        id: sub.id,
+        formId: sub.formId,
+        formTitle: sub.formId ? formMap.get(sub.formId) || "Untitled Form" : "Untitled Form",
+        createdAt: sub.createdAt,
+        values: mappedValues,
+      };
+    });
+
+    return mappedResult as unknown as {
       id: string;
       formId: string | null;
+      formTitle: string | null;
       createdAt: Date | null;
-      values: { formFieldId: string; value: string }[] | null;
+      values: { formFieldId: string; label: string | null; value: string }[] | null;
     }[];
   }
 }
