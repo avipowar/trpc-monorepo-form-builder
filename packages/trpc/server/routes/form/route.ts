@@ -17,6 +17,7 @@ import {
   getFormOutputModel,
   getFormSubmissionsInputModel,
   getFormSubmissionsOutputModel,
+  listAllSubmissionsOutputModel,
   listFormsOutputModel,
   submitFormInputModel,
   submitFormOutputModel,
@@ -190,5 +191,20 @@ export const formRouter = router({
     .output(getFormSubmissionsOutputModel)
     .query(async ({ input }) => {
       return formSubmissionService.getFormSubmissions({ formId: input.formId });
+    }),
+
+  listAllSubmissions: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: getPath("/listAllSubmissions"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(z.undefined())
+    .output(listAllSubmissionsOutputModel) 
+    .query(async () => {
+      return formSubmissionService.listAllSubmissions();
     }),
 });

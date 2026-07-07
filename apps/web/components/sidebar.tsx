@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, FileText, Settings } from "lucide-react";
+import { LayoutDashboard, FileText, Settings, Inbox } from "lucide-react";
 
 interface SidebarProps {
   user: {
@@ -17,9 +17,15 @@ export function Sidebar({ user }: SidebarProps) {
           <button className="flex w-full items-center gap-3 rounded-xl bg-secondary px-4 py-3 text-sm font-medium text-foreground">
             <LayoutDashboard className="h-4 w-4" /> Dashboard
           </button>
+
           <button className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-all">
             <FileText className="h-4 w-4" /> My Forms
           </button>
+
+          <button className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-all cursor-pointer">
+            <Inbox className="h-4 w-4" /> Submissions
+          </button>
+
           <button className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-all">
             <Settings className="h-4 w-4" /> Settings
           </button>

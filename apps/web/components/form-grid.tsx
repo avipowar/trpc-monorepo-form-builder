@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // 🎯 नेव्हिगेशनसाठी useRouter अ‍ॅड केला
-import { Trash2, AlertTriangle, Pencil, ExternalLink, Copy, Check, FileText } from "lucide-react"; // 🎯 नवीन आवश्यक आयकॉन्स
+import { useRouter } from "next/navigation";
+import { Trash2, AlertTriangle, Pencil, ExternalLink, Copy, Check, FileText } from "lucide-react";
 
 interface Form {
   id: string;
   title: string;
   description?: string | null;
   createdAt: string | null;
+  submissionsCount?: number;
 }
 
 interface FormGridProps {
@@ -20,9 +21,8 @@ interface FormGridProps {
 export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
   const router = useRouter();
   const [formToDelete, setFormToDelete] = useState<string | null>(null);
-  const [copiedFormId, setCopiedFormId] = useState<string | null>(null); // 🎯 कोणत्या फॉर्मची लिंक कॉपी झाली ते ट्रॅक करण्यासाठी
+  const [copiedFormId, setCopiedFormId] = useState<string | null>(null);
 
-  // 🎯 लिंक कॉपी करण्याचे कडक लॉजिक
   const handleCopyLink = async (e: React.MouseEvent, formId: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -30,7 +30,7 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
     try {
       await navigator.clipboard.writeText(publicFormLink);
       setCopiedFormId(formId);
-      setTimeout(() => setCopiedFormId(null), 2000); // २ सेकंदानंतर परत नॉर्मल होणार
+      setTimeout(() => setCopiedFormId(null), 2000);
     } catch (err) {
       console.error("Failed to copy link: ", err);
     }
@@ -47,10 +47,8 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
           No forms found. Click "Create New Form" to get started! 🚀
         </div>
       ) : (
-        /* 🎯 मुख्य ग्रिड लेआउट */
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {forms.map((form) => {
-            // तारीख फॉरमॅट करणे
             const formattedDate = form.createdAt
               ? new Date(form.createdAt).toLocaleDateString("en-US", {
                   month: "short",
@@ -60,12 +58,10 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
               : "June 28, 2026";
 
             return (
-              /* 🎯 मुख्य कार्ड बॉक्स - जो आता एक प्युअर कंटेनर आहे */
               <div
                 key={form.id}
                 className="group relative rounded-2xl border border-border bg-card p-6 transition-all hover:scale-[1.01] hover:shadow-md flex flex-col justify-between space-y-4"
               >
-                {/* वरचा भाग: टायटल, स्टेटस आणि तारीख */}
                 <div className="space-y-1">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 truncate">
@@ -79,23 +75,23 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
                     </span>
                   </div>
 
-                  {/* क्रिएशन तारीख */}
                   <p className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                     Created: {formattedDate}
                   </p>
                 </div>
 
-                {/* मध्यभागी: डिस्क्रिप्शन */}
                 <p className="text-xs text-muted-foreground line-clamp-2 h-8">
                   {form.description || "No description provided."}
                 </p>
 
-                {/* 🎯 तुझ्या डिझाईननुसार फाईन बॉर्डर रेषा (Divider) */}
+                <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 dark:text-zinc-500 select-none pt-1">
+                  <span>📩</span>
+                  <span>{form.submissionsCount ?? 0} Submissions</span>
+                </div>
+
                 <div className="h-[1px] bg-border/50 w-full" />
 
-                {/* 🎯 तळचा भाग: अ‍ॅक्शन्स बटन्सची ओळ */}
                 <div className="flex items-center justify-between gap-1.5 pt-1">
-                  {/* डावीकडील ३ मुख्य बटन्सचा ग्रुप */}
                   <div className="flex items-center gap-1.5 flex-1 min-w-0">
                     {/* १. ✏️ Edit Form Button */}
                     <button
@@ -113,7 +109,7 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
                       <ExternalLink className="h-3 w-3" /> Live
                     </button>
 
-                    {/* ३. 📋 Copy Link Button - विथ रिअल-टाइम सक्सेस स्टेट */}
+                    {/* ३. 📋 Copy Link Button */}
                     <button
                       onClick={(e) => handleCopyLink(e, form.id)}
                       className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-[11px] font-bold transition-all cursor-pointer truncate shrink-0 ${
@@ -134,7 +130,7 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
                     </button>
                   </div>
 
-                  {/* ४. 🗑️ Delete Button - अगदी शेवटी उजव्या कोपऱ्यात */}
+                  {/* ४. 🗑️ Delete Button */}
                   <button
                     onClick={() => setFormToDelete(form.id)}
                     className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-colors cursor-pointer shrink-0"

@@ -258,3 +258,23 @@ export const useGetFormSubmissions = (formId: string) => {
     status,
   };
 };
+
+export const useListAllSubmissions = () => {
+  const {
+    data: allSubmissions = [],
+    error,
+    isFetched,
+    isFetching,
+    isLoading,
+    status,
+  } = trpc.form.listAllSubmissions.useQuery(); // tRPC मधील listAllSubmissions प्रोसिजरला कॉल करेल
+
+  return {
+    allSubmissions,
+    error,
+    isFetched,
+    isFetching,
+    isLoading,
+    status,
+  };
+};

@@ -132,3 +132,19 @@ export const deleteFormInputModel = z.object({
 export const deleteFormOutputModel = z.object({
   id: z.string().describe("ID of the deleted form"),
 });
+
+export const listAllSubmissionsOutputModel = z.array(
+  z.object({
+    id: z.string(),
+    formId: z.string().uuid().nullable(),
+    createdAt: z.date().nullable(),
+    values: z
+      .array(
+        z.object({
+          formFieldId: z.string(),
+          value: z.string(),
+        }),
+      )
+      .nullable(),
+  }),
+);

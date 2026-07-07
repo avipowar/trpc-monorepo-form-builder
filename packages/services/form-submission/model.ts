@@ -19,3 +19,21 @@ export const getFormSubmissionsInput = z.object({
 });
 
 export type GetFormSubmissionsInputType = z.infer<typeof getFormSubmissionsInput>;
+
+export const listAllSubmissionsOutput = z.array(
+  z.object({
+    id: z.string(),
+    formId: z.string().uuid().nullable(),
+    createdAt: z.date().nullable(),
+    values: z
+      .array(
+        z.object({
+          formFieldId: z.string(),
+          value: z.string(),
+        }),
+      )
+      .nullable(),
+  }),
+);
+
+export type ListAllSubmissionsOutputType = z.infer<typeof listAllSubmissionsOutput>;

@@ -37,5 +37,24 @@ class FormSubmissionService {
       .where(eq(formSubmissionTable.formId, formId))
       .orderBy(desc(formSubmissionTable.createdAt));
   }
+
+  public async listAllSubmissions() {
+    const result = await db
+      .select({
+        id: formSubmissionTable.id,
+        formId: formSubmissionTable.formId,
+        values: formSubmissionTable.values,
+        createdAt: formSubmissionTable.createdAt,
+      })
+      .from(formSubmissionTable)
+      .orderBy(desc(formSubmissionTable.createdAt));
+
+    return result as unknown as {
+      id: string;
+      formId: string | null;
+      createdAt: Date | null;
+      values: { formFieldId: string; value: string }[] | null;
+    }[];
+  }
 }
 export default FormSubmissionService;
