@@ -2,7 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, AlertTriangle, Pencil, ExternalLink, Copy, Check, FileText } from "lucide-react";
+import {
+  Trash2,
+  AlertTriangle,
+  Pencil,
+  ExternalLink,
+  Copy,
+  Check,
+  FileText,
+  Calendar,
+  Inbox,
+} from "lucide-react";
 
 interface Form {
   id: string;
@@ -62,6 +72,7 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
                 key={form.id}
                 className="group relative rounded-2xl border border-border bg-card p-6 transition-all hover:scale-[1.01] hover:shadow-md flex flex-col justify-between space-y-4"
               >
+                {/* 🌟 हेडर विभाग */}
                 <div className="space-y-1">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 truncate">
@@ -74,26 +85,33 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
                       Draft
                     </span>
                   </div>
-
-                  <p className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
-                    Created: {formattedDate}
-                  </p>
                 </div>
 
+                {/* 📝 डिस्क्रिप्शन */}
                 <p className="text-xs text-muted-foreground line-clamp-2 h-8">
                   {form.description || "No description provided."}
                 </p>
 
-                <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 dark:text-zinc-500 select-none pt-1">
-                  <span>📩</span>
-                  <span>{form.submissionsCount ?? 0} Submissions</span>
+                {/* 🎯 मेटाडेटा रो (आता एकदम क्लीन, नो व्हाईट पॅच, नो इमोजी) */}
+                <div className="flex items-center justify-between text-[11px] font-medium text-zinc-500 dark:text-zinc-400 select-none pt-1">
+                  {/* डावी बाजू: सबमिशन काउंट */}
+                  <div className="flex items-center gap-1.5">
+                    <Inbox className="h-3.5 w-3.5 text-zinc-400" />
+                    <span>{form.submissionsCount ?? 0} Submissions</span>
+                  </div>
+
+                  {/* उजवी बाजू: साधी आणि सुंदर तारीख */}
+                  <div className="flex items-center gap-1.5 text-zinc-400 dark:text-zinc-500">
+                    <Calendar className="h-3.5 w-3.5" />
+                    <span>{formattedDate}</span>
+                  </div>
                 </div>
 
                 <div className="h-[1px] bg-border/50 w-full" />
 
+                {/* ⚙️ ॲक्शन बटन्स */}
                 <div className="flex items-center justify-between gap-1.5 pt-1">
                   <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                    {/* १. ✏️ Edit Form Button */}
                     <button
                       onClick={() => router.push(`/dashboard/forms/${form.id}`)}
                       className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-[11px] font-bold text-zinc-800 dark:text-zinc-200 transition-all cursor-pointer border border-transparent dark:border-zinc-800 shrink-0"
@@ -101,7 +119,6 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
                       <Pencil className="h-3 w-3" /> Edit
                     </button>
 
-                    {/* २. 🚀 View Live Button */}
                     <button
                       onClick={() => window.open(`/p/${form.id}`, "_blank")}
                       className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-[11px] font-bold text-zinc-700 dark:text-zinc-300 transition-all cursor-pointer shrink-0"
@@ -109,7 +126,6 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
                       <ExternalLink className="h-3 w-3" /> Live
                     </button>
 
-                    {/* ३. 📋 Copy Link Button */}
                     <button
                       onClick={(e) => handleCopyLink(e, form.id)}
                       className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-[11px] font-bold transition-all cursor-pointer truncate shrink-0 ${
@@ -130,7 +146,6 @@ export function FormGrid({ forms, isLoading, onDelete }: FormGridProps) {
                     </button>
                   </div>
 
-                  {/* ४. 🗑️ Delete Button */}
                   <button
                     onClick={() => setFormToDelete(form.id)}
                     className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-colors cursor-pointer shrink-0"
