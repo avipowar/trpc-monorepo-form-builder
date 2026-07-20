@@ -45,11 +45,11 @@ export default function DashboardPage() {
     return null;
   }
 
-  // Filtering the real database forms
   const filteredForms = (forms || []).filter((form) => {
     if (activeFilter === "all") return true;
-    const formStatus = "draft";
-    return formStatus === activeFilter;
+
+    const formStatus = form.status?.toLowerCase() || "draft";
+    return formStatus === activeFilter.toLowerCase();
   });
 
   return (
@@ -81,7 +81,7 @@ export default function DashboardPage() {
         {/* ४. DYNAMIC FORMS GRID SECTION */}
         <FormGrid forms={filteredForms} isLoading={isFormsLoading} onDelete={handleDeleteForm} />
 
-        {/* ५. MODERN MINIMALIST MODAL - WITH DESCRIPTION FIELD */}
+        {/* ५. MODERN MINIMALIST MODAL */}
         <CreateFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </main>
     </div>

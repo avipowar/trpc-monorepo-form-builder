@@ -25,3 +25,9 @@ export const deleteFormInput = z.object({
 });
 
 export type DeleteFormInputType = z.infer<typeof deleteFormInput>;
+
+export const publishFormInput = z.object({
+  id: z.string().uuid().describe("UUID of the form to publish"),
+});
+
+export type PublishFormInputType = z.infer<typeof publishFormInput>;

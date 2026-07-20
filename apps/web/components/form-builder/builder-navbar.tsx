@@ -1,14 +1,13 @@
 "use client";
 
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 interface BuilderNavbarProps {
   formId: string;
   onBack: () => void;
-  onSave: () => void;
 }
 
-export function BuilderNavbar({ formId, onBack, onSave }: BuilderNavbarProps) {
+export function BuilderNavbar({ formId, onBack }: BuilderNavbarProps) {
   return (
     <header className="h-16 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121214] px-6 flex items-center justify-between shrink-0 z-50 shadow-sm">
       <div className="flex items-center gap-4">
@@ -23,13 +22,6 @@ export function BuilderNavbar({ formId, onBack, onSave }: BuilderNavbarProps) {
           <p className="text-[10px] text-zinc-400 font-mono mt-0.5">ID: {formId}</p>
         </div>
       </div>
-
-      <button
-        onClick={onSave}
-        className="flex items-center gap-2 px-4 py-2 text-xs font-semibold bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-900 rounded-xl hover:opacity-90 transition-opacity cursor-pointer shadow-md active:scale-95 transition-all"
-      >
-        <Save className="h-3.5 w-3.5" /> Save Configuration
-      </button>
     </header>
   );
 }

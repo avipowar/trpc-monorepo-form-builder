@@ -14,6 +14,7 @@ export const listFormsOutputModel = z.array(
     id: z.string().describe("ID of the form"),
     title: z.string().describe("Title of the form"),
     description: z.string().nullable().optional().describe("Description of the form"),
+    status: z.string().describe("Status of the form"),
     createdAt: z.date().nullable().describe("Creation timestamp"),
     updatedAt: z.date().nullable().describe("Last updated timestamp"),
   }),
@@ -150,3 +151,11 @@ export const listAllSubmissionsOutputModel = z.array(
       .nullable(),
   }),
 );
+
+export const publishFormInputModel = z.object({
+  id: z.string().uuid().describe("UUID of the form to publish"),
+});
+
+export const publishFormOutputModel = z.object({
+  id: z.string().describe("ID of the published form"),
+});

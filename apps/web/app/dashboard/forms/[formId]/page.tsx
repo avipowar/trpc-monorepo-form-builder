@@ -4,9 +4,15 @@ import { useParams, useRouter } from "next/navigation";
 import { BuilderNavbar } from "~/components/form-builder/builder-navbar";
 import { BuilderSidebar } from "~/components/form-builder/builder-sidebar";
 import { BuilderCanvas } from "~/components/form-builder/builder-canvas";
-import { useCreateField, useGetFields, useDeleteField, useUpdateField } from "~/hooks/api/form";
+import {
+  useCreateField,
+  useGetFields,
+  useDeleteField,
+  useUpdateField,
+  usePublishForm,
+} from "~/hooks/api/form";
 import { useState, useEffect } from "react";
-import { X, ArrowRight } from "lucide-react";
+import { X, ArrowRight, Rocket } from "lucide-react";
 
 type FieldType = "TEXT" | "NUMBER" | "EMAIL" | "PASSWORD" | "YES_NO";
 
@@ -18,6 +24,7 @@ export default function FormBuilderPage() {
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
   const [localLabel, setLocalLabel] = useState("");
   const [localPlaceholder, setLocalPlaceholder] = useState("");
@@ -30,6 +37,7 @@ export default function FormBuilderPage() {
   const { createFieldAsync } = useCreateField(formId);
   const { deleteFieldAsync } = useDeleteField(formId);
   const { updateFieldAsync } = useUpdateField(formId);
+  const { publishFormAsync } = usePublishForm();
 
   // Sync database values with local states
   useEffect(() => {
@@ -115,6 +123,15 @@ export default function FormBuilderPage() {
     setIsSaveModalOpen(true);
   };
 
+  const handlePublishForm = async () => {
+    try {
+      await publishFormAsync({ id: formId });
+      setIsPublishModalOpen(true);
+    } catch (err) {
+      console.error("Error publishing form:", err);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-sm font-medium">
@@ -125,15 +142,13 @@ export default function FormBuilderPage() {
 
   return (
     <div className="h-screen w-full flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50 overflow-hidden transition-colors duration-200">
-      <BuilderNavbar
-        formId={formId}
-        onBack={() => router.push("/dashboard")}
-        onSave={handleSaveConfiguration}
-      />
+     
+      <BuilderNavbar formId={formId} onBack={() => router.push("/dashboard")} />
 
       <div className="flex-1 flex h-[calc(100vh-64px)] w-full overflow-hidden">
         <BuilderSidebar onAddField={addField} />
 
+        
         <BuilderCanvas
           fields={dbFields || []}
           onRemoveField={removeField}
@@ -142,10 +157,12 @@ export default function FormBuilderPage() {
             setIsEditModalOpen(true);
           }}
           selectedFieldId={selectedFieldId}
+          onSave={handleSaveConfiguration}
+          onPublish={handlePublishForm}
         />
       </div>
 
-      {/* Fullscreen Backdrop Blur Modal Overlay */}
+      {/* FIELD PROPERTIES MODAL */}
       {isEditModalOpen && selectedField && (
         <div className="fixed inset-0 w-screen h-screen bg-zinc-950/60 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-150">
           <div className="w-full max-w-sm bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 flex flex-col space-y-6">
@@ -227,6 +244,7 @@ export default function FormBuilderPage() {
         </div>
       )}
 
+      {/* CONFIGURATION SAVED MODAL */}
       {isSaveModalOpen && (
         <div className="fixed inset-0 w-screen h-screen bg-zinc-950/60 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-150">
           <div className="w-full max-w-sm bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 flex flex-col items-center text-center space-y-4">
@@ -241,7 +259,6 @@ export default function FormBuilderPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
             </div>
-
             <div className="space-y-1">
               <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
                 Configuration Saved!
@@ -250,7 +267,6 @@ export default function FormBuilderPage() {
                 Your form configuration has been successfully synchronized with the database.
               </p>
             </div>
-
             <div className="flex gap-3 w-full pt-2">
               <button
                 type="button"
@@ -259,7 +275,6 @@ export default function FormBuilderPage() {
               >
                 Keep Editing
               </button>
-
               <button
                 type="button"
                 onClick={() => {
@@ -269,6 +284,48 @@ export default function FormBuilderPage() {
                 className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 hover:border-emerald-500 bg-transparent px-4 py-2.5 text-xs font-semibold text-emerald-500 hover:bg-emerald-500/5 cursor-pointer shadow-sm active:scale-95 transition-all"
               >
                 Dashboard <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FORM PUBLISHED LIVE MODAL */}
+      {isPublishModalOpen && (
+        <div className="fixed inset-0 w-screen h-screen bg-zinc-950/60 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-150">
+          <div className="w-full max-w-sm bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 flex flex-col items-center text-center space-y-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 animate-in zoom-in duration-200">
+              <Rocket className="h-6 w-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
+                Form Published Live!
+              </h3>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                Your form status is now updated to PUBLISHED. It is officially ready to collect user
+                submissions.
+              </p>
+            </div>
+            <div className="flex gap-3 w-full pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsPublishModalOpen(false);
+                  window.open(`/p/${formId}`, "_blank");
+                }}
+                className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-2.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 cursor-pointer transition-all"
+              >
+                View Live Form
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsPublishModalOpen(false);
+                  router.push("/dashboard");
+                }}
+                className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 hover:border-emerald-500 bg-transparent px-4 py-2.5 text-xs font-semibold text-emerald-500 hover:bg-emerald-500/5 cursor-pointer shadow-sm active:scale-95 transition-all"
+              >
+                Go to Dashboard <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>

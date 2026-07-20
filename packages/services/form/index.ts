@@ -8,6 +8,8 @@ import {
   ListFromsByUserIdInput,
   DeleteFormInputType,
   deleteFormInput,
+  publishFormInput,
+  PublishFormInputType,
 } from "./model";
 import { formsTable } from "@repo/database/models/form";
 import { formFieldsTable } from "@repo/database/models/form-field";
@@ -40,6 +42,24 @@ class FormService {
 
     return { id: result[0]?.id };
   }
+  public async publishForm(payload: PublishFormInputType) {
+    const { id } = await publishFormInput.parseAsync(payload);
+
+    const result = await db
+      .update(formsTable)
+      .set({
+        status: "PUBLISHED",
+      })
+      .where(eq(formsTable.id, id))
+      .returning({
+        id: formsTable.id,
+      });
+
+    if (!result || result.length === 0 || !result[0]?.id)
+      throw new Error(`something went wrong while publishing the form`);
+
+    return { id: result[0]?.id };
+  }
   public async listFormsByUserId(payload: ListFromsByUserIdInput) {
     const { userId } = await listFromsByUserIdInput.parseAsync(payload);
 
@@ -48,6 +68,7 @@ class FormService {
         id: formsTable.id,
         title: formsTable.title,
         description: formsTable.description,
+        status: formsTable.status,
         createdAt: formsTable.createdAt,
         updatedAt: formsTable.updatedAt,
       })

@@ -19,6 +19,8 @@ import {
   getFormSubmissionsOutputModel,
   listAllSubmissionsOutputModel,
   listFormsOutputModel,
+  publishFormInputModel,
+  publishFormOutputModel,
   submitFormInputModel,
   submitFormOutputModel,
   updateFieldInputModel,
@@ -203,8 +205,27 @@ export const formRouter = router({
       },
     })
     .input(z.undefined())
-    .output(listAllSubmissionsOutputModel) 
+    .output(listAllSubmissionsOutputModel)
     .query(async () => {
       return formSubmissionService.listAllSubmissions();
+    }),
+
+  publishForm: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: getPath("/publishForm"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(publishFormInputModel)
+    .output(publishFormOutputModel)
+    .mutation(async ({ input }) => {
+      const { id } = input;
+
+      const result = await formService.publishForm({ id });
+
+      return { id: result.id };
     }),
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { User, Hash, Mail, Lock, Trash2, Pencil, Phone } from "lucide-react";
+import { User, Hash, Mail, Lock, Trash2, Pencil, Phone, Save, Rocket } from "lucide-react";
 
 type FieldType = "TEXT" | "NUMBER" | "EMAIL" | "PASSWORD" | "YES_NO";
 
@@ -20,6 +20,8 @@ interface BuilderCanvasProps {
   onRemoveField: (id: string) => void;
   onSelectField: (id: string) => void;
   selectedFieldId: string | null;
+  onSave: () => void;
+  onPublish: () => void;
 }
 
 export function BuilderCanvas({
@@ -27,6 +29,8 @@ export function BuilderCanvas({
   onRemoveField,
   onSelectField,
   selectedFieldId,
+  onSave,
+  onPublish,
 }: BuilderCanvasProps) {
   const getFieldIcon = (type: FieldType, label: string) => {
     const iconClass = "absolute left-4 top-3.5 h-4 w-4 text-zinc-400 dark:text-zinc-600";
@@ -126,13 +130,25 @@ export function BuilderCanvas({
               );
             })}
 
-            <button
-              type="button"
-              disabled
-              className="w-full mt-6 flex items-center justify-center gap-2 rounded-xl bg-zinc-900 dark:bg-zinc-50 py-3 text-sm font-semibold text-zinc-50 dark:text-zinc-900 opacity-40 shadow-md"
-            >
-              Submit Form
-            </button>
+            <div className="space-y-3 w-full pt-4 mt-6">
+              {/* 💾 १. Save Configuration Button */}
+              <button
+                type="button"
+                onClick={onSave}
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-800/80 py-3 text-sm font-bold shadow-sm transition-all active:scale-[0.99] cursor-pointer"
+              >
+                <Save className="h-4 w-4" /> Save Configuration
+              </button>
+
+              {/* 🚀 २. Publish Live Button */}
+              <button
+                type="button"
+                onClick={onPublish}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white py-3 text-sm font-extrabold shadow-md shadow-emerald-900/10 transition-all active:scale-[0.99] cursor-pointer select-none"
+              >
+                <Rocket className="h-4 w-4 animate-pulse" /> Publish Live Form
+              </button>
+            </div>
           </div>
         )}
       </div>

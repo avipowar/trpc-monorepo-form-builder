@@ -60,6 +60,36 @@ export const useDeleteForm = () => {
   };
 };
 
+export const usePublishForm = () => {
+  const utils = trpc.useUtils();
+
+  const {
+    mutateAsync: publishFormAsync,
+    mutate: publishForm,
+    error,
+    failureCount,
+    isError,
+    isIdle,
+    isSuccess,
+    status,
+  } = trpc.form.publishForm.useMutation({
+    onSuccess: async () => {
+      await utils.form.listForms.invalidate();
+    },
+  });
+
+  return {
+    publishFormAsync,
+    publishForm,
+    error,
+    failureCount,
+    isError,
+    isIdle,
+    isSuccess,
+    status,
+  };
+};
+
 export const useListForms = () => {
   const {
     data: forms = [],
@@ -267,7 +297,7 @@ export const useListAllSubmissions = () => {
     isFetching,
     isLoading,
     status,
-  } = trpc.form.listAllSubmissions.useQuery(); // tRPC मधील listAllSubmissions प्रोसिजरला कॉल करेल
+  } = trpc.form.listAllSubmissions.useQuery();
 
   return {
     allSubmissions,
