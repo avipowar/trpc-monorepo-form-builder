@@ -10,6 +10,8 @@ import {
   getLoggedInUserInfoOutputModel,
   signInUserWithEmailAndPasswordInputModel,
   signInUserWithEmailAndPasswordOutputModel,
+  updateUserInputModel,
+  updateUserOutputModel,
 } from "./model";
 
 const TAGS = ["Authentication"];
@@ -87,6 +89,27 @@ export const authRouter = router({
         email,
         fullName,
         profileImageUrl,
+      };
+    }),
+
+  updateUser: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "PATCH",
+        path: getPath("/updateUser"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(updateUserInputModel)
+    .output(updateUserOutputModel)
+    .mutation(async ({ input, ctx }) => {
+      const { id, fullName, email } = await userService.updateUser(ctx?.user.id, input);
+
+      return {
+        id,
+        fullName,
+        email,
       };
     }),
 });

@@ -79,3 +79,27 @@ export const useUser = () => {
     status,
   };
 };
+
+export const useUpdateUser = () => {
+  const utils = trpc.useUtils();
+
+  const {
+    mutateAsync: updateUserAsync,
+    mutate: updateUser,
+    error,
+    isPending,
+    isSuccess,
+  } = trpc.auth.updateUser.useMutation({
+    onSuccess: async () => {
+      await utils.auth.getLoggedInUserInfo.invalidate();
+    },
+  });
+
+  return {
+    updateUserAsync,
+    updateUser,
+    error,
+    isPending,
+    isSuccess,
+  };
+};

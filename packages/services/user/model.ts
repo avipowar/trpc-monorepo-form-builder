@@ -24,4 +24,9 @@ export const signInUserWithEmailAndPasswordInput = z.object({
 export type SignInUserWithEmailAndPasswordInputType = z.infer<
   typeof signInUserWithEmailAndPasswordInput
 >;
-  
+
+export const updateUserInput = z.object({
+  fullName: z.string().describe("Full name of the user"),
+});
+
+export type UpdateUserInputType = z.infer<typeof updateUserInput>;

@@ -27,3 +27,13 @@ export const getLoggedInUserInfoOutputModel = z.object({
   fullName: z.string().describe("name of the user"),
   profileImageUrl: z.string().describe("image of the user").optional().nullable(),
 });
+
+export const updateUserInputModel = z.object({
+  fullName: z.string().describe("new name of the user"),
+});
+
+export const updateUserOutputModel = z.object({
+  id: z.string().describe("id of the user"),
+  fullName: z.string().describe("updated name of the user"),
+  email: z.string().describe("email of the user"),
+});

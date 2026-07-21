@@ -5,6 +5,8 @@ import {
   type CreateUserWitEmailAndPasswordInputType,
   SignInUserWithEmailAndPasswordInputType,
   signInUserWithEmailAndPasswordInput,
+  updateUserInput,
+  UpdateUserInputType,
 } from "./model";
 import { createHmac, randomBytes } from "node:crypto";
 
@@ -122,6 +124,26 @@ class UserService {
   public async verifyAndDecodeUserToken(token: string) {
     const { id } = await this.verifyUserToken(token);
     return { id };
+  }
+
+  public async updateUser(id: string, payload: UpdateUserInputType) {
+    const { fullName } = await updateUserInput.parseAsync(payload);
+
+    const updatedResult = await db
+      .update(usersTable)
+      .set({ fullName })
+      .where(eq(usersTable.id, id))
+      .returning({
+        id: usersTable.id,
+        fullName: usersTable.fullName,
+        email: usersTable.email,
+      });
+
+    if (!updatedResult || updatedResult.length === 0) {
+      throw new Error("Failed to update user profile");
+    }
+
+    return updatedResult[0]!;
   }
 }
 
