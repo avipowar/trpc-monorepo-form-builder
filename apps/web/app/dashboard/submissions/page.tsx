@@ -7,10 +7,9 @@ import { Inbox, Loader2, Calendar, ArrowLeft, LayoutDashboard, Database } from "
 export default function SubmissionsPage() {
   const { allSubmissions, isLoading, error } = useListAllSubmissions();
 
-  // 1. Loading State
   if (isLoading) {
     return (
-      <div className="fixed inset-0 md:left-64 flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 p-4 bg-zinc-55 dark:bg-zinc-950">
+      <div className="flex min-h-[80vh] w-full flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 p-4">
         <Loader2 className="h-8 w-8 animate-spin mb-3 text-emerald-500" />
         <p className="text-xs font-semibold tracking-wide uppercase">
           Loading your submissions... ☕
@@ -19,10 +18,9 @@ export default function SubmissionsPage() {
     );
   }
 
-  // 2. Error State
   if (error) {
     return (
-      <div className="fixed inset-0 md:left-64 flex items-center justify-center p-4 bg-zinc-50 dark:bg-zinc-950">
+      <div className="flex min-h-[80vh] w-full items-center justify-center p-4">
         <div className="w-full max-w-md rounded-2xl border border-red-500/20 bg-red-500/5 p-6 text-center shadow-xl">
           <h2 className="text-sm font-bold text-red-500">Failed to fetch submissions</h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{error.message}</p>
@@ -31,10 +29,9 @@ export default function SubmissionsPage() {
     );
   }
 
-  // 3. Empty State
   if (!allSubmissions || allSubmissions.length === 0) {
     return (
-      <div className="fixed inset-0 md:left-64 flex items-center justify-center p-4 z-10 bg-zinc-50 dark:bg-zinc-950">
+      <div className="flex min-h-[80vh] w-full items-center justify-center p-4">
         <div className="w-full max-w-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl p-10 flex flex-col items-center justify-center space-y-6 shadow-2xl text-center">
           <div className="h-16 w-16 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-400 dark:text-zinc-500 border border-zinc-200 dark:border-zinc-800 shadow-inner">
             <Inbox className="h-7 w-7 animate-pulse text-emerald-500" />
