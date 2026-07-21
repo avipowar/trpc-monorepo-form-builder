@@ -16,6 +16,8 @@ import {
   Inbox,
   Calendar,
   AlertTriangle,
+  CheckCircle2,
+  Copy,
 } from "lucide-react";
 
 export default function FormsPage() {
@@ -32,6 +34,9 @@ export default function FormsPage() {
   // 🎯 Delete Form Custom Modal State
   const [deleteFormId, setDeleteFormId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // 🎯 Copy Link Custom Modal State
+  const [copiedLink, setCopiedLink] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<"ALL" | "PUBLISHED" | "DRAFT">("ALL");
@@ -58,12 +63,18 @@ export default function FormsPage() {
     }
   };
 
+  const handleCopyLink = (formId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/p/${formId}`;
+    navigator.clipboard.writeText(url);
+    setCopiedLink(url);
+  };
+
   const promptDeleteForm = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setDeleteFormId(id);
   };
 
-  // 🗑️ फॉर्म नक्की डिलीट करणे
   const confirmDeleteForm = async () => {
     if (!deleteFormId) return;
 
@@ -174,7 +185,7 @@ export default function FormsPage() {
                   key={form.id}
                   className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm dark:shadow-xl space-y-4 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between"
                 >
-                  {/* Card Top: File Icon + Title + Status Badge */}
+                  {/* Card Top */}
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-2.5">
@@ -189,7 +200,6 @@ export default function FormsPage() {
                       </span>
                     </div>
 
-                    {/* Description Text */}
                     <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 min-h-[32px]">
                       {form.description || "No description provided"}
                     </p>
@@ -207,7 +217,7 @@ export default function FormsPage() {
                     </div>
                   </div>
 
-                  {/* 🎯 Action Buttons: Edit, Live, Link, Delete */}
+                  {/* 🎯 Action Buttons */}
                   <div className="flex items-center justify-between pt-2">
                     <div className="flex items-center gap-2">
                       <button
@@ -225,10 +235,7 @@ export default function FormsPage() {
                       </button>
 
                       <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(`${window.location.origin}/p/${form.id}`);
-                          alert("Form link copied to clipboard! 📋");
-                        }}
+                        onClick={(e) => handleCopyLink(form.id, e)}
                         className="px-3.5 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-100 text-xs font-bold flex items-center gap-1.5 border border-zinc-200 dark:border-zinc-700/80 transition-all cursor-pointer"
                       >
                         <Link2 className="h-3.5 w-3.5" /> Link
@@ -357,6 +364,47 @@ export default function FormsPage() {
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 🟢 CUSTOM COPY LINK MODAL */}
+      {copiedLink && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200 text-center">
+            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 mx-auto">
+              <CheckCircle2 className="h-6 w-6" />
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">Link Copied!</h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                The form share link has been copied to your clipboard.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
+              <span className="truncate select-all text-left">{copiedLink}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(copiedLink);
+                  setCopiedLink(null);
+                }}
+                className="p-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 transition-all cursor-pointer shrink-0"
+                title="Copy and close"
+              >
+                <Copy className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setCopiedLink(null)}
+              className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-white transition-all cursor-pointer shadow-md"
+            >
+              Done
+            </button>
           </div>
         </div>
       )}
