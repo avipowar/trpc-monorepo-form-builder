@@ -13,6 +13,7 @@ import {
 } from "./model";
 import { formsTable } from "@repo/database/models/form";
 import { formFieldsTable } from "@repo/database/models/form-field";
+import { formSubmissionTable } from "@repo/database/models/form-submission"; // 🎯 FIX: 'formSubmissionTable' (Singular)
 
 class FormService {
   public async createForm(payload: CreateFormInputType) {
@@ -31,8 +32,13 @@ class FormService {
   public async deleteForm(payload: DeleteFormInputType) {
     const { id } = await deleteFormInput.parseAsync(payload);
 
+    // 🎯 1. आधी Submissions डिलीट करा
+    await db.delete(formSubmissionTable).where(eq(formSubmissionTable.formId, id));
+
+    // 🎯 2. नंतर Fields डिलीट करा
     await db.delete(formFieldsTable).where(eq(formFieldsTable.formId, id));
 
+    // 🎯 3. शेवटी मूळ Form डिलीट करा
     const result = await db.delete(formsTable).where(eq(formsTable.id, id)).returning({
       id: formsTable.id,
     });
@@ -42,6 +48,7 @@ class FormService {
 
     return { id: result[0]?.id };
   }
+
   public async publishForm(payload: PublishFormInputType) {
     const { id } = await publishFormInput.parseAsync(payload);
 
@@ -60,6 +67,7 @@ class FormService {
 
     return { id: result[0]?.id };
   }
+
   public async listFormsByUserId(payload: ListFromsByUserIdInput) {
     const { userId } = await listFromsByUserIdInput.parseAsync(payload);
 
