@@ -142,13 +142,11 @@ export default function FormBuilderPage() {
 
   return (
     <div className="h-screen w-full flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50 overflow-hidden transition-colors duration-200">
-     
-      <BuilderNavbar formId={formId} onBack={() => router.push("/dashboard")} />
+      <BuilderNavbar formId={formId} onBack={() => router.push("/dashboard/forms")} />
 
       <div className="flex-1 flex h-[calc(100vh-64px)] w-full overflow-hidden">
         <BuilderSidebar onAddField={addField} />
 
-        
         <BuilderCanvas
           fields={dbFields || []}
           onRemoveField={removeField}
@@ -279,11 +277,11 @@ export default function FormBuilderPage() {
                 type="button"
                 onClick={() => {
                   setIsSaveModalOpen(false);
-                  router.push("/dashboard");
+                  router.push("/dashboard/forms");
                 }}
                 className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 hover:border-emerald-500 bg-transparent px-4 py-2.5 text-xs font-semibold text-emerald-500 hover:bg-emerald-500/5 cursor-pointer shadow-sm active:scale-95 transition-all"
               >
-                Dashboard <ArrowRight className="h-3.5 w-3.5" />
+                My Forms <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>
@@ -321,11 +319,11 @@ export default function FormBuilderPage() {
                 type="button"
                 onClick={() => {
                   setIsPublishModalOpen(false);
-                  router.push("/dashboard");
+                  router.push("/dashboard/forms");
                 }}
                 className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 hover:border-emerald-500 bg-transparent px-4 py-2.5 text-xs font-semibold text-emerald-500 hover:bg-emerald-500/5 cursor-pointer shadow-sm active:scale-95 transition-all"
               >
-                Go to Dashboard <ArrowRight className="h-3.5 w-3.5" />
+                Go to My Forms <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>

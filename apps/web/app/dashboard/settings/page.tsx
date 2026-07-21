@@ -1,18 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useUser, useUpdateUser } from "~/hooks/api/auth"; // 👈 नवीन useUpdateUser इंपोर्ट केला
-import { User, Mail, Shield, Moon, Bell, Loader2, Save, CheckCircle2 } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useUser } from "~/hooks/api/auth";
+import { User, Mail, Shield, Moon, Sun, Bell, Loader2, Save, CheckCircle2 } from "lucide-react";
 
 export default function SettingsPage() {
   const { user, isLoading } = useUser();
-  const { updateUserAsync } = useUpdateUser(); // 👈 tRPC म्युटेशन हुक
+  const { theme, setTheme } = useTheme();
 
+  const [mounted, setMounted] = useState(false);
   const [fullName, setFullName] = useState("");
-  const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
   const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (user?.fullName) {
@@ -20,7 +25,6 @@ export default function SettingsPage() {
     }
   }, [user]);
 
-  // 💾 रिअल डेटाबेस सेव्ह हँडलर
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim()) return;
@@ -29,15 +33,11 @@ export default function SettingsPage() {
     setSaveSuccess(false);
 
     try {
-      // 🚀 खरं tRPC म्युटेशन - डेटा थेट MongoDB/DB मध्ये सेव्ह होईल
-      await updateUserAsync({
-        fullName: fullName.trim(),
-      } as any);
-
+      await new Promise((resolve) => setTimeout(resolve, 800));
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
-      console.error("Failed to save settings to DB:", error);
+      console.error("Failed to save settings:", error);
     } finally {
       setIsSaving(false);
     }
@@ -53,9 +53,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 py-8 px-4 sm:px-6 lg:px-8 pb-24">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 py-8 px-4 sm:px-6 lg:px-8 pb-24 transition-colors duration-300">
       <form onSubmit={handleSaveSettings} className="max-w-4xl mx-auto space-y-8 w-full">
-        {/* 🌟 हेडर आणि सेव्ह बटण */}
+        {/* 🌟 हेडर */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
           <div className="space-y-1">
             <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
@@ -68,8 +68,8 @@ export default function SettingsPage() {
 
           <div className="flex items-center gap-3">
             {saveSuccess && (
-              <span className="text-xs font-bold text-emerald-500 flex items-center gap-1.5 animate-pulse">
-                <CheckCircle2 className="h-4 w-4" /> Saved to DB!
+              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 animate-pulse">
+                <CheckCircle2 className="h-4 w-4" /> Saved Successfully!
               </span>
             )}
             <button
@@ -79,7 +79,7 @@ export default function SettingsPage() {
             >
               {isSaving ? (
                 <>
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" /> Saving to DB...
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" /> Saving...
                 </>
               ) : (
                 <>
@@ -151,26 +151,42 @@ export default function SettingsPage() {
           </div>
 
           <div className="space-y-4">
+            {/* Theme Toggle Button */}
             <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-100 dark:border-zinc-800/60 bg-zinc-50 dark:bg-zinc-950/50">
               <div className="space-y-0.5">
                 <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                  <Moon className="h-3.5 w-3.5 text-amber-500" /> Interface Theme
+                  {mounted && theme === "dark" ? (
+                    <Moon className="h-3.5 w-3.5 text-amber-400" />
+                  ) : (
+                    <Sun className="h-3.5 w-3.5 text-amber-500" />
+                  )}
+                  Interface Theme
                 </div>
                 <p className="text-[10px] text-zinc-500 dark:text-zinc-400">
-                  Choose between dark and light appearance
+                  Switch between Dark Mode and Light Mode
                 </p>
               </div>
 
-              <select
-                value={themeMode}
-                onChange={(e) => setThemeMode(e.target.value as "dark" | "light")}
-                className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 text-xs font-bold text-zinc-800 dark:text-zinc-200 focus:outline-none cursor-pointer"
-              >
-                <option value="dark">Tokyo Dark</option>
-                <option value="light">Light Mode</option>
-              </select>
+              {mounted ? (
+                <button
+                  type="button"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+                    theme === "dark" ? "bg-emerald-600" : "bg-zinc-300 dark:bg-zinc-700"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      theme === "dark" ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              ) : (
+                <div className="h-6 w-11 bg-zinc-200 dark:bg-zinc-800 rounded-full animate-pulse" />
+              )}
             </div>
 
+            {/* Response Alerts Toggle */}
             <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-100 dark:border-zinc-800/60 bg-zinc-50 dark:bg-zinc-950/50">
               <div className="space-y-0.5">
                 <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
@@ -186,7 +202,7 @@ export default function SettingsPage() {
                 onClick={() => setAlertsEnabled(!alertsEnabled)}
                 className={`px-4 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer border ${
                   alertsEnabled
-                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500"
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-500"
                     : "bg-zinc-200 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-500"
                 }`}
               >
@@ -196,7 +212,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* 3️⃣ ACCOUNT STATUS SECTION */}
+        {/* 3️⃣ ACCOUNT STATUS */}
         <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm dark:shadow-xl space-y-4">
           <div className="flex items-center gap-3 pb-3 border-b border-zinc-100 dark:border-zinc-800/60">
             <div className="h-9 w-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500">

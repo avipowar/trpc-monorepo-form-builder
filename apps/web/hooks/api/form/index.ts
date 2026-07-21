@@ -3,90 +3,69 @@ import { trpc } from "~/trpc/client";
 export const useCreateForm = () => {
   const utils = trpc.useUtils();
 
-  const {
-    mutateAsync: createFormAsync,
-    mutate: createForm,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
-  } = trpc.form.createForm.useMutation({
+  const mutation = trpc.form.createForm.useMutation({
     onSuccess: async () => {
       await utils.form.listForms.invalidate();
     },
   });
 
   return {
-    createFormAsync,
-    createForm,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
+    createFormAsync: mutation.mutateAsync,
+    createForm: mutation.mutate,
+    error: mutation.error,
+    failureCount: mutation.failureCount,
+    isError: mutation.isError,
+    isIdle: mutation.isIdle,
+    isSuccess: mutation.isSuccess,
+    status: mutation.status,
+    isPending: mutation.status === "pending" || (mutation as any).isLoading,
+    isLoading: mutation.status === "pending" || (mutation as any).isLoading,
   };
 };
 
 export const useDeleteForm = () => {
   const utils = trpc.useUtils();
 
-  const {
-    mutateAsync: deleteFormAsync,
-    mutate: deleteForm,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
-  } = trpc.form.deleteForm.useMutation({
+  const mutation = trpc.form.deleteForm.useMutation({
     onSuccess: async () => {
       await utils.form.listForms.invalidate();
     },
   });
 
   return {
-    deleteFormAsync,
-    deleteForm,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
+    deleteFormAsync: mutation.mutateAsync,
+    deleteForm: mutation.mutate,
+    error: mutation.error,
+    failureCount: mutation.failureCount,
+    isError: mutation.isError,
+    isIdle: mutation.isIdle,
+    isSuccess: mutation.isSuccess,
+    status: mutation.status,
+    isPending: mutation.status === "pending" || (mutation as any).isLoading,
+    isLoading: mutation.status === "pending" || (mutation as any).isLoading,
   };
 };
 
 export const usePublishForm = () => {
   const utils = trpc.useUtils();
 
-  const {
-    mutateAsync: publishFormAsync,
-    mutate: publishForm,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
-  } = trpc.form.publishForm.useMutation({
+  const mutation = trpc.form.publishForm.useMutation({
     onSuccess: async () => {
       await utils.form.listForms.invalidate();
     },
   });
 
   return {
-    publishFormAsync,
-    publishForm,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
+    publishFormAsync: mutation.mutateAsync,
+    publishForm: mutation.mutate,
+    error: mutation.error,
+    failureCount: mutation.failureCount,
+    isError: mutation.isError,
+    isIdle: mutation.isIdle,
+    isSuccess: mutation.isSuccess,
+    status: mutation.status,
+    isPending: mutation.status === "pending" || (mutation as any).isLoading,
+    isLoading: mutation.status === "pending" || (mutation as any).isLoading,
   };
 };
 
@@ -133,90 +112,69 @@ export const useGetFields = (formId: string) => {
 export const useCreateField = (formId: string) => {
   const utils = trpc.useUtils();
 
-  const {
-    mutateAsync: createFieldAsync,
-    mutate: createField,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
-  } = trpc.form.createField.useMutation({
+  const mutation = trpc.form.createField.useMutation({
     onSuccess: async () => {
       await utils.form.getFields.invalidate({ formId });
     },
   });
 
   return {
-    createFieldAsync,
-    createField,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
+    createFieldAsync: mutation.mutateAsync,
+    createField: mutation.mutate,
+    error: mutation.error,
+    failureCount: mutation.failureCount,
+    isError: mutation.isError,
+    isIdle: mutation.isIdle,
+    isSuccess: mutation.isSuccess,
+    status: mutation.status,
+    isPending: mutation.status === "pending" || (mutation as any).isLoading,
+    isLoading: mutation.status === "pending" || (mutation as any).isLoading,
   };
 };
 
 export const useUpdateField = (formId: string) => {
   const utils = trpc.useUtils();
 
-  const {
-    mutateAsync: updateFieldAsync,
-    mutate: updateField,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
-  } = trpc.form.updateField.useMutation({
+  const mutation = trpc.form.updateField.useMutation({
     onSuccess: async () => {
       await utils.form.getFields.invalidate({ formId });
     },
   });
 
   return {
-    updateFieldAsync,
-    updateField,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
+    updateFieldAsync: mutation.mutateAsync,
+    updateField: mutation.mutate,
+    error: mutation.error,
+    failureCount: mutation.failureCount,
+    isError: mutation.isError,
+    isIdle: mutation.isIdle,
+    isSuccess: mutation.isSuccess,
+    status: mutation.status,
+    isPending: mutation.status === "pending" || (mutation as any).isLoading,
+    isLoading: mutation.status === "pending" || (mutation as any).isLoading,
   };
 };
 
 export const useDeleteField = (formId: string) => {
   const utils = trpc.useUtils();
 
-  const {
-    mutateAsync: deleteFieldAsync,
-    mutate: deleteField,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
-  } = trpc.form.deleteField.useMutation({
+  const mutation = trpc.form.deleteField.useMutation({
     onSuccess: async () => {
       await utils.form.getFields.invalidate({ formId });
     },
   });
 
   return {
-    deleteFieldAsync,
-    deleteField,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
+    deleteFieldAsync: mutation.mutateAsync,
+    deleteField: mutation.mutate,
+    error: mutation.error,
+    failureCount: mutation.failureCount,
+    isError: mutation.isError,
+    isIdle: mutation.isIdle,
+    isSuccess: mutation.isSuccess,
+    status: mutation.status,
+    isPending: mutation.status === "pending" || (mutation as any).isLoading,
+    isLoading: mutation.status === "pending" || (mutation as any).isLoading,
   };
 };
 
@@ -246,26 +204,19 @@ export const useGetForm = (formId: string) => {
 };
 
 export const useSubmitForm = () => {
-  const {
-    mutateAsync: submitFormAsync,
-    mutate: submitForm,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
-  } = trpc.form.submitForm.useMutation();
+  const mutation = trpc.form.submitForm.useMutation();
 
   return {
-    submitFormAsync,
-    submitForm,
-    error,
-    failureCount,
-    isError,
-    isIdle,
-    isSuccess,
-    status,
+    submitFormAsync: mutation.mutateAsync,
+    submitForm: mutation.mutate,
+    error: mutation.error,
+    failureCount: mutation.failureCount,
+    isError: mutation.isError,
+    isIdle: mutation.isIdle,
+    isSuccess: mutation.isSuccess,
+    status: mutation.status,
+    isPending: mutation.status === "pending" || (mutation as any).isLoading,
+    isLoading: mutation.status === "pending" || (mutation as any).isLoading,
   };
 };
 
